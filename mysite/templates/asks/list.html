@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% block title %}Последние вопросы{% endblock %}
+
+{% block content %}
+
+	{% if latest_asks_list %}
+	
+		{% for a in latest_asks_list %}
+			<a href="{% url 'asks:detail' a.id %}">{{a.ask_title}}</a>
+		{% endfor %}
+	
+	{% else %}
+		Вопросов нет, все свободны! :)
+	{% endif %}
+	
+{% endblock %}
