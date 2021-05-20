@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Полный путь к проекту
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PROJECT_ROOT = os.path.dirname(__file__)
@@ -22,16 +23,18 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'apps'))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3f8w8i)d2b#5y$dnj)wz9bhxk^95sg-57_wd1mf7g=&(%l*(-z'
+SECRET_KEY = '3f8w8i)d2b#5y$dnj)wz9bhxk^95sg-57_wd1mf7g=&(%l*(-z' # Секретный ключ приложения, нельзя никому давать
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Переменная разрешения отладки
 DEBUG = True
-
+# Указываем доменные имена, где можно опубликовать сайт
+# Указываем доменные имена, где можно опубликовать сайт
 ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# Список установленных в проект приложений
 INSTALLED_APPS = [
     'asking.apps.AskingConfig',
     'grappelli',
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# Список промежуточного ПО
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -53,8 +57,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Указываем основной файл урлс
 ROOT_URLCONF = 'mysite.urls'
 
+# Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,6 +80,7 @@ TEMPLATES = [
     },
 ]
 
+# Это для выгрузки сайта на сервер
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
@@ -82,8 +89,12 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'owlya',
+        'USER': 'owlya',
+        'PASSWORD': 'sveya',
+        'HOST': '127.0.0.1',
+        'PORT': '5432'
     }
 }
 
@@ -124,6 +135,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATICFILES_DIRS = '../static/'
+
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATICFILES_DIRS = [os.path.join(PROJECT_ROOT, 'static')]
