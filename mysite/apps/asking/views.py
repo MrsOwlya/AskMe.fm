@@ -1,31 +1,27 @@
-from django.http import Http404, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
-from django.urls import reverse
 
 from .models import Ask, Answer
 
+def base(request):
+	return render(request, 'base.html')
+
+def login(request):
+	return render(request, 'asking/login.html')
+
+def signup(request):
+	return render(request, 'asking/signup.html')
+
 def index(request):
-	latest_asks_list = Ask.objects.order_by('-pub_date')[:5]
-	return render(request, 'asks/list.html', {'latest_asks_list': latest_asks_list})
+	latest_asks_list = Ask.objects.order_by('-ask_date')[:5]
+	return render(request, 'asking/index.html', {'latest_asks_list': latest_asks_list})
 	
-def detail(request, ask_id):
+def question(request, ask_id):
 	try:
 		a = Ask.objects.get( id = ask_id )
 	except:
-		raise Http404("Вопрос не найден!")
+		raise ObjectDoesNotExist("Вопрос не найден!")
 	last_answers_list = a.answer_set.order_by('-id')[:10]
 		
-	return render(request, 'asks/detail.html', {'ask': a})
-	
-def get_answer(request, ask_id):
-	try:
-		a = Ask.objects.get( id = ask_id )
-	except:
-		raise Http404("Вопрос не найден!")
-		
-	return render(request, 'asks/detail.html', {'ask': a})
-	
-	a.answer_set.create(author_name = request.POST['name'], answer_text = request.POST['text'])
-	
-	return HttpResponseRedirect(reverse('asks:detail', args = a.id,))
+	return render(request, 'asking/question.html', {'ask': a})
 # Create your views here.
