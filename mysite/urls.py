@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# Указываем, куда откуда переходим(по какому адресу)
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('asking/', include('asking.urls')),
