@@ -1,4 +1,6 @@
-{% extends 'main.html' %}
+{% extends 'base.html' %}
+
+{% load static %}
 
 {% block title %}{{ask.ask_title}}{% endblock %}
 
@@ -6,8 +8,10 @@
 
 <h2>{{ask.ask_title}}</h2>
 <p>{{ask.ask_explane}}</p>
+    <div class = "container">
+        <div row>
 <em>{{ask.pub_date}}</em>
-
+    </div>>
 <hr>
 
 {% if last_answers_list %}
@@ -29,7 +33,7 @@
 
 <hr>
 
-<form action="{% url 'asks:get_answer' ask.id %}" method="POST">
+<form action="{% url 'asking:get_answer' ask.id %}" method="POST">
 
 	{% csrf_token %}
 

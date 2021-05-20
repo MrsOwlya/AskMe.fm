@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+    <h1 class = "text-center">Настройки профиля</h1>
+    <form role = "form">
+        <div class = "form-group">
+            <label for="email">Изменить email</label>
+            <input type="email" class ="form-control" id="email" placeholder="Введите email">
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="login">Изменить логин</label>
+            <input type="login" class ="form-control" id="login" placeholder="Введите логин">
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="password">Изменить пароль</label>
+            <input type="password" class ="form-control" id="password" placeholder="Введите старый пароль">
+        </div>
+        <br>
+        <div class = "form-group">
+            <input type="password" class ="form-control" id="password2" placeholder="Введите новый пароль">
+        </div>
+        <br>
+        <div class = "form-group">
+            <input type="password" class ="form-control" id="password2" placeholder="Повторите пароль">
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="avatarka">Выбранная аватарка</label>
+            <br>
+            <img class="rounded" src="avatar.png" style = "width: 200px">
+            <br>
+            <input id="file-demo" type="file" class="file" multiple=true data-preview-file-type="any">
+        </div>
+        <br>
+        <button type="button" class="btn btn-info">Подтвердить изменения</>
+    </form>
+{% endblock %}

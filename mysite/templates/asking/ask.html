@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+    <h1 class = "text-center">Задайте свой вопрос</h1>
+    <form role = "form">
+        <div class = "form-group">
+            <label for="question">Вопрос</label>
+            <input type="form-control" class ="form-control" id="question" placeholder="Введите вопрос">
+            <p class="help-block">Напишите краткую версию вопроса</p>
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="explane">Пояснение</label>
+            <textarea class ="form-control" id="login" placeholder="Введите пояснение"></textarea>
+            <p class="help-block">Напишите уточнения по своему вопросу</p>
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="tags">Теги</label>
+            <input type="form-control" class ="form-control" id="tags" placeholder="Введите теги">
+            <p class="help-block">Напишите теги к вопросу через запятую</p>
+        </div>
+        <br>
+        <button type="button" class="btn btn-info">Отправить</>
+    </form>
+{% endblock %}
