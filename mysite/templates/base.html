@@ -33,19 +33,19 @@
                 {% if user.is_authenticated %}
                     <div class="container avatar-container col-md-4">
                             <div class="nav-item">
-                                <a class="nav-link" href="#">Ask me!</a>
+                                <a class="nav-link" href="{% url 'ask' %}">Ask me!</a>
                             </div>
 
                             <div class="col-2 mr-4 ml-auto">
-                                <img class="rounded-circle" src="avatar.png" style = "width: 90px">
+                                <img class="rounded-circle" src="{{ user.user_avatar }}" style = "width: 90px">
                             </div>
                         <div class="row">
                             <div class="mr-4">
-                                <b>Owlya</b>
+                                <b>{{ user.user_login }}</b>
                             </div>
                             <div class="row">
                                 <div class="col col-np">
-                                    <a href="#">Настройки</a>
+                                    <a href="{% url 'settings' %}">Настройки</a>
                                 </div>
 
                                 <div class="col mr-2 col-np">
@@ -67,11 +67,11 @@
                             </div>
                             <div class="row">
                                 <div class="col col-np">
-                                    <a href="#">Войти</a>
+                                    <a href="{% url 'login' %}">Войти</a>
                                 </div>
 
                                 <div class="col mr-2 col-np">
-                                    <a href="#">Регистрация</a>
+                                    <a href="{% url 'signup' %}">Регистрация</a>
                                 </div>
                             </div>
                         </div>
