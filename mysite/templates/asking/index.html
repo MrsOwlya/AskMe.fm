@@ -5,7 +5,7 @@
 {% block title %}Последние вопросы{% endblock %}
 
 {% block content %}
-    <div class = "my-4 p-2" href = "#">
+    <div class = "my-4 p-2">
         <div class="row">
             <div class = "col-6">
                 <a href = "#"><h2 class="text-center">Последние вопросы</h2></a>
@@ -14,17 +14,19 @@
                 <a href = "#"><h2 class="text-center">Популярные вопросы</h2></a>
             </div>
         </div>
-        {% if latest_asks_list %}
-
-            {% for a in latest_asks_list %}
-                <div class = "border rounded bg-light my-4 p-2" href = "#">
-                    <a href="{% url 'asking:question' a.id %}">{{a.ask_title}}</a>
-                </div>div>
+        {% if index %}
+            {% for a in index %}
+                <div class = "border rounded bg-light my-4 p-2">
+                    <h3>{{a.ask_title}}</h3>
+                    <p>{{a.ask_explane}}</p>
+                    <p>{{a.ask_date}}</p>
+                </div>
             {% endfor %}
-
-	    {% else %}
-		    Вопросов нет, все свободны! :)
-	    {% endif %}
+        {% else %}
+            <div class = "border rounded bg-light my-4 p-2">
+                <h3>Вопросов нет :(</h3>
+            </div>
+        {% endif %}
     </div>
 	
 {% endblock %}
