@@ -9,12 +9,12 @@
     <form role = "form">
         <div class = "form-group">
             <label for="email">Изменить email</label>
-            <input type="email" class ="form-control" id="email" placeholder="Введите email">
+            <input type="email" class ="form-control" id="email" placeholder="{{ user.user_email }}">
         </div>
         <br>
         <div class = "form-group">
             <label for="login">Изменить логин</label>
-            <input type="login" class ="form-control" id="login" placeholder="Введите логин">
+            <input type="login" class ="form-control" id="login" placeholder="{{ user.user_login }}">
         </div>
         <br>
         <div class = "form-group">
@@ -33,7 +33,7 @@
         <div class="form-group">
             <label for="avatarka">Выбранная аватарка</label>
             <br>
-            <img class="rounded" src="avatar.png" style = "width: 200px">
+            <img class="rounded" src="{{ user.user_avatar }}" style = "width: 200px">
             <br>
             <input id="file-demo" type="file" class="file" multiple=true data-preview-file-type="any">
         </div>
