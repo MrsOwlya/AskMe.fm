@@ -19,6 +19,6 @@ from django.urls import path, include
 # Указываем, куда откуда переходим(по какому адресу)
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
-    path('asking/', include('asking.urls')),
+    path('', include('asking.urls')),
     path('admin/', admin.site.urls),
 ]
