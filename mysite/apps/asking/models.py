@@ -42,7 +42,7 @@ class Answer(models.Model):
 	answer_likes = models.IntegerField('Кол-во лайков')
 	
 	def __str__(self):
-		return self.answerer_name
+		return self.answer_text
 		
 	class Meta:
 		verbose_name = 'Ответ'
