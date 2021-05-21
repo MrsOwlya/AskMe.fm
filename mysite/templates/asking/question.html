@@ -6,24 +6,59 @@
 
 {% block content %}
 
-<h2>{{ask.ask_title}}</h2>
-<p>{{ask.ask_explane}}</p>
-    <div class = "container">
-        <div row>
-<em>{{ask.pub_date}}</em>
-    </div>>
-<hr>
+    <div class="p-1 bg-light">
+        <h4 class="font-weight-bold text-center">{{ask.ask_title}}</h4>
+    </div>
+    <div class="m-1">
+        <p>{{ask.ask_explane}}</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class ="col-10">
+                <p>{{ask.asker_name}}</p>
+            </div>
+            <div class ="col-2">
+                <p class="text-right">{{ask.ask_date}}</p>
+            </div>
+        </div>
+    </div>
 
-{% if last_answers_list %}
+{% if user.is_authenticated %}
 
-	{% for b in last_answers_list %}
-	
-		<p>
-		
-			<strong>{{b.author_name}}</strong>
-			<p>{{b.answer_text}}</p>
-		
-		</p>
+    <form action="{% url 'asking:get_answer' ask.id %}" method="POST">
+        <p class = "font-weight-bold">{{ user.user_login }}<p>
+	    <textarea name="text" required placeholder="Ваш ответ" cols="30" rows="10"></textarea><br>
+	    <button type="submit">Ответить</button>
+    </form>
+
+{% else %}
+    <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
+{% endif %}
+
+{% if answer %}
+	{% for b in answer %}
+
+        <div class="p-1 bg-light border rounded">
+            <p class="font-weight-bold">{{b.answerer_name}}</p>
+            <p>{{answer.answer_text}}</p>
+            <div class="container">
+                <div class="row">
+                    <div class="col-11">
+                        <p>{{b.answer_date}}</p>
+                    </div>
+                    <div class="col-1">
+                        <div class="row">
+                            <div class="col-6">
+                                <button class="btn btn-default"><i class="fas fa-heart"></i></button>
+                            </div>
+                            <div class="col-6">
+                                <p>{{b.answer_likes}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 	
 	{% endfor %}
 
@@ -31,16 +66,5 @@
 	На этот вопрос еще никто не ответил :(
 {% endif %}
 
-<hr>
-
-<form action="{% url 'asking:get_answer' ask.id %}" method="POST">
-
-	{% csrf_token %}
-
-	<input type="text" required placeholder="Ваше имя" name="name"><br>
-	<textarea name="text" required placeholder="Ваш ответ" cols="30" rows="10"></textarea><br>
-	<button type="submit">Ответить</button>
-
-</form>
 	
 {% endblock %}
