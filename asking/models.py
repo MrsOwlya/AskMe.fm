@@ -35,8 +35,8 @@ class Ask(models.Model):
 
 
 class Answer(models.Model):
-    ask = models.ForeignKey(Ask, on_delete=models.CASCADE)
-    answerer_name = models.ForeignKey(User, on_delete=models.CASCADE)
+    ask = models.ForeignKey(Ask, on_delete=models.CASCADE, related_name='ask_answer', null=True, blank=True)
+    answerer_name = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     answer_text = models.TextField(verbose_name=u'Текст ответа')
     answer_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата ответа')
     answer_likes = models.IntegerField(default=0, verbose_name=u'Кол-во лайков')

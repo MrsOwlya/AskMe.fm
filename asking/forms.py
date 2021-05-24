@@ -1,3 +1,5 @@
+from django.forms import Textarea
+
 from .models import Account, Ask, Answer
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core import validators
@@ -103,6 +105,7 @@ class AskForm(forms.ModelForm):
 class AnswerForm(forms.ModelForm):
     answer_text = forms.CharField(widget=forms.Textarea(attrs={
         'class': 'form-control',
+        'rows': 4,
         'placeholder': 'Ваш ответ'
     }))
 

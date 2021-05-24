@@ -3,9 +3,37 @@ from django.shortcuts import render
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+
 from .models import Ask, Answer, Account
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
 from django.views.generic import DetailView
+from django.views.generic.edit import FormMixin
+
+
+class QuestDetailView(FormMixin, DetailView):
+	model = Ask
+	template_name = 'asking/question.html'
+	context_object_name = 'quest'
+	form_class = AnswerForm
+
+
+	def post(self, request, *args, **kwargs):
+		form = self.get_form()
+		if form.is_valid():
+			return self.form_valid(form)
+		else:
+			return self.form_invalid(form)
+
+	def form_valid(self, form):
+		self.object=form.save()
+		self.object.ask=self.get_object()
+		self.object.answerer_name=self.request.user
+		self.object.save()
+		return super().form_valid(form)
+
+	def get_success_url(self, **kwargs):
+		return reverse_lazy('question', kwargs={'pk':self.get_object().id})
 
 
 def signup_up(request):
@@ -39,12 +67,6 @@ def index(request):
 	index = Ask.objects.order_by('-ask_date')[:5]
 	return render(request, 'asking/index.html', {'index': index, 'avatar': avatar(request)})
 
-class QuestDetailView(DetailView):
-	model = Ask
-	template_name = 'asking/question.html'
-	context_object_name = 'quest'
-
-
 def login_in(request):
 	form = LoginForm()
 	if request.method == 'POST':
@@ -56,7 +78,6 @@ def login_in(request):
 				return HttpResponseRedirect('/?continue=index')
 		return render(request, 'asking/login.html', {'form': form})
 	return render(request, 'asking/login.html', {'form': form})
-
 
 def logout(request):
 	if request.user.is_authenticated:
@@ -72,4 +93,18 @@ def avatar(request):
 		pass
 	return avatar
 
-# Create your views here.
+# def answer(request):
+# 	form = AnswerForm()
+# 	if request.method == 'POST':
+# 		form = AnswerForm(request.POST)
+# 		if form.is_valid():
+# 			answer = Answer.objects.create(answer_text=request.POST.get('answer_text'), ask=Ask.objects.get(id=QuestDetailView.pk_url_kwarg), answerer_name=request.user)
+# 			answer.save()
+# 			return render(request, 'asking/question.html')
+# 		return render(request, 'asking/question.html', {'form': form, 'avatar': avatar(request)})
+# 	return render(request, 'asking/question.html', {'form': form, 'avatar': avatar(request)})
+# # Create your views here.
+#
+# def answer_list(request):
+# 	answer_list = Answer.objects.get(ask=Ask.objects.get(id=QuestDetailView.pk_url_kwarg)).order_by('-answer_date')
+# 	return render(request, 'asking/index.html', {'answer_list': answer_list, 'avatar': avatar(request)})

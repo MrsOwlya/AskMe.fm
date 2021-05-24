@@ -20,8 +20,11 @@
                     <a href="{% url 'question' a.id%}"><h3>{{a.ask_title}}</h3></a>
                     <p>{{a.ask_explane}}</p>
                     <div class = "row">
-                        <div class = "col-6">
+                        <div class = "col-3">
                             <p>{{a.ask_date}}</p>
+                        </div>
+                        <div class = "col-3">
+                            <p>Ответов: {{quest.ask_answer.all.count}}</p>
                         </div>
                         <div class = "col-6">
                             <p class = "text-end">{{a.asker_name}}</p>

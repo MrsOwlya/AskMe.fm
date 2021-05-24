@@ -27,23 +27,25 @@
     {% if form.errors %}
         <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
     {% endif %}
-    <form role="form" method="POST">
+    <hr>
+    <form role="form" method="post">
         {% csrf_token %}
-        <p class = "font-weight-bold">{{ user.username }}<p>
+        <p class = "font-weight-bold">Введите ответ<p>
         {{ form.answer_text }}<br>
-	    <button type="submit">Ответить</button>
+	    <button type="submit" class="btn btn-info">Ответить</button>
     </form>
 
 {% else %}
     <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
 {% endif %}
 
-{% if answer %}
-	{% for b in answer %}
+{% if quest.ask_answer.all %}
+	{% for b in quest.ask_answer.all %}
 
-        <div class="p-1 bg-light border rounded">
+        <div class="p-1 mb-2 bg-light border rounded">
             <p class="font-weight-bold">{{b.answerer_name}}</p>
             <p>{{b.answer_text}}</p>
+            <hr>
             <div class="container">
                 <div class="row">
                     <div class="col-11">
