@@ -7,37 +7,35 @@
 {% block content %}
     <h1 class = "text-center">Настройки профиля</h1>
     <form role = "form">
+        {% csrf_token %}
         <div class = "form-group">
             <label for="email">Изменить email</label>
-            <input type="email" class ="form-control" id="email" placeholder="{{ user.user_email }}">
+            {{form.user_email}}
         </div>
         <br>
         <div class = "form-group">
             <label for="login">Изменить логин</label>
-            <input type="login" class ="form-control" id="login" placeholder="{{ user.user_login }}">
+            {{form.user_login}}
         </div>
         <br>
         <div class = "form-group">
             <label for="password">Изменить пароль</label>
-            <input type="password" class ="form-control" id="password" placeholder="Введите старый пароль">
+            {{form.user_password}}
         </div>
         <br>
         <div class = "form-group">
-            <input type="password" class ="form-control" id="password2" placeholder="Введите новый пароль">
+            {{form.user_password2}}
         </div>
         <br>
-        <div class = "form-group">
-            <input type="password" class ="form-control" id="password2" placeholder="Повторите пароль">
-        </div>
         <br>
         <div class="form-group">
             <label for="avatarka">Выбранная аватарка</label>
             <br>
-            <img class="rounded" src="{{ user.user_avatar }}" style = "width: 200px">
+            <img class="rounded" src="{{ avatar }}" style = "width: 200px">
             <br>
             <input id="file-demo" type="file" class="file" multiple=true data-preview-file-type="any">
         </div>
         <br>
-        <button type="button" class="btn btn-info">Подтвердить изменения</button>
+        <button type="submit" class="btn btn-info">Подтвердить изменения</button>
     </form>
 {% endblock %}

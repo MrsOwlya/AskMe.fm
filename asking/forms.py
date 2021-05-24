@@ -7,7 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 import re
 
-class LoginForm(forms.Form):
+class LoginForm(forms.ModelForm):
     username = forms.CharField(widget=forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Введите логин'
@@ -33,20 +33,20 @@ class LoginForm(forms.Form):
         model = User
         fields = ['username', 'password']
 
-class SignupForm(forms.Form):
-    user_login = forms.CharField(widget=forms.TextInput(attrs={
+class SignupForm(forms.ModelForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
         'placeholder': 'Введите логин'
     }))
-    user_email = forms.EmailField(widget=forms.EmailInput(attrs={
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
         'class': 'form-control',
         'placeholder': 'Введите email'
     }))
-    user_password = forms.CharField(widget=forms.PasswordInput(attrs={
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Введите пароль'
     }))
-    user_password2 = forms.CharField(widget=forms.PasswordInput(attrs={
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'form-control',
         'placeholder': 'Повторите пароль'
     }))
@@ -56,15 +56,15 @@ class SignupForm(forms.Form):
     }))
 
     def clean(self):
-        user_login = self.cleaned_data['user_login']
-        user_email = self.cleaned_data['user_email']
-        user_password = self.cleaned_data['user_password']
-        user_password2 = self.cleaned_data['user_password2']
-        if not user_login or len(user_login) == 0:
+        username = self.cleaned_data['username']
+        email = self.cleaned_data['email']
+        password = self.cleaned_data['password']
+        password2 = self.cleaned_data['password2']
+        if not username or len(username) == 0:
             raise forms.ValidationError("Введите логин!")
-        if not user_email or len(user_email) == 0:
+        if not email or len(email) == 0:
             raise forms.ValidationError("Введите email!")
-        if user_password != user_password2:
+        if password != password2:
             raise forms.ValidationError("Пароли не совпадают!")
         return self.cleaned_data
 

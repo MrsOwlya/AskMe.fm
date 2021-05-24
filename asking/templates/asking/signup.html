@@ -16,27 +16,27 @@
     <form role = "form" method = "post">
         {% csrf_token %}
         <div class = "form-group">
-            <label for="email">Email</label>
-            {{form.user_email}}
+            <label for="username">Логин</label>
+            {{form.username}}
         </div>
         <br>
         <div class = "form-group">
-            <label for="login">Логин</label>
-            {{form.user_login}}
+            <label for="email">Email</label>
+            {{form.email}}
         </div>
         <br>
         <div class = "form-group">
             <label for="password">Пароль</label>
-            {{form.user_password}}
+            {{form.password}}
         </div>
         <br>
         <div class = "form-group">
             <label for="password2">Повторите пароль</label>
-            {{form.user_password2}}
+            {{form.password2}}
         </div>
         <br>
         <div class="form-group">
-            <label for="avatarka">Загрузите свою аватарку</label>
+            <label for="user_avatar">Загрузите свою аватарку</label>
             <br>
             {{form.user_avatar}}
         </div>

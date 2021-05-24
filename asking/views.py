@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from .models import Ask, Answer, Account
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
 from django.views.generic import DetailView
-from django.views.generic.edit import FormMixin
+from django.views.generic.edit import FormMixin, CreateView
 
 
 class QuestDetailView(FormMixin, DetailView):
@@ -16,7 +16,6 @@ class QuestDetailView(FormMixin, DetailView):
 	template_name = 'asking/question.html'
 	context_object_name = 'quest'
 	form_class = AnswerForm
-
 
 	def post(self, request, *args, **kwargs):
 		form = self.get_form()
@@ -35,22 +34,11 @@ class QuestDetailView(FormMixin, DetailView):
 	def get_success_url(self, **kwargs):
 		return reverse_lazy('question', kwargs={'pk':self.get_object().id})
 
-
-def signup_up(request):
-	form = SignupForm()
-	if request.method == 'POST':
-		form = SignupForm(request.POST)
-		if form.is_valid():
-			try:
-				user = User.objects.create_user(username=request.POST.get('user_login'), email=request.POST.get('user_email'), password=request.POST.get('user_password'))
-				user.save()
-				user_id = User.objects.get(id=user.pk)
-				avatar = Account(user=user_id, user_avatar=request.POST.get('user_avatar'))
-				avatar.save()
-			except IntegrityError:
-				return render(request, 'asking/signup.html', {'form': form})
-		return render(request, 'asking/signup.html', {'form': form})
-	return render(request, 'asking/signup.html', {'form': form})
+class SignupView(CreateView):
+	model = Account
+	template_name = 'asking/signup.html'
+	form_class = SignupForm
+	success_url = 'asking/login.html'
 
 def ask(request):
 	form = AskForm()
@@ -79,6 +67,10 @@ def login_in(request):
 		return render(request, 'asking/login.html', {'form': form})
 	return render(request, 'asking/login.html', {'form': form})
 
+def settings(request):
+
+	return render(request, 'asking/settings.html', {'avatar': avatar(request)})
+
 def logout(request):
 	if request.user.is_authenticated:
 		auth.logout(request)
@@ -92,19 +84,3 @@ def avatar(request):
 	except ValueError:
 		pass
 	return avatar
-
-# def answer(request):
-# 	form = AnswerForm()
-# 	if request.method == 'POST':
-# 		form = AnswerForm(request.POST)
-# 		if form.is_valid():
-# 			answer = Answer.objects.create(answer_text=request.POST.get('answer_text'), ask=Ask.objects.get(id=QuestDetailView.pk_url_kwarg), answerer_name=request.user)
-# 			answer.save()
-# 			return render(request, 'asking/question.html')
-# 		return render(request, 'asking/question.html', {'form': form, 'avatar': avatar(request)})
-# 	return render(request, 'asking/question.html', {'form': form, 'avatar': avatar(request)})
-# # Create your views here.
-#
-# def answer_list(request):
-# 	answer_list = Answer.objects.get(ask=Ask.objects.get(id=QuestDetailView.pk_url_kwarg)).order_by('-answer_date')
-# 	return render(request, 'asking/index.html', {'answer_list': answer_list, 'avatar': avatar(request)})
