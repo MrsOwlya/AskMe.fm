@@ -6,8 +6,12 @@
 
 {% block content %}
     <h1 class = "text-center">Регистрация</h1>
-    {% if form.errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+    {% if alert %}
+        {% if form.errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+        {% else %}
+            <div class="alert alert-success">Вы успешно зарегистрированы!</div>
+        {% endif %}
     {% endif %}
     <form role = "form" method = "post">
         {% csrf_token %}
