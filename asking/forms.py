@@ -68,7 +68,7 @@ class SignupForm(forms.Form):
 
     class Meta:
         model = Account
-        fields = ['user', 'user_avatar']
+        fields = ['username', 'email', 'password', 'user_avatar']
 
 class AskForm(forms.ModelForm):
     ask_title = forms.CharField(widget=forms.TextInput(attrs={
@@ -113,5 +113,5 @@ class AnswerForm(forms.ModelForm):
         return self.cleaned_data
 
     class Meta:
-        model = Ask
+        model = Answer
         fields = ['answer_text']
