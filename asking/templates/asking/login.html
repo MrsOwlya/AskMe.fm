@@ -1,0 +1,26 @@
+{% extends 'asking/base.html' %}
+
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+    <h1 class = "text-center">Авторизация</h1>
+    {% if form.errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+    {% endif %}
+    <form role = "form" method = "post">
+        {% csrf_token %}
+        <div class = "form-group">
+            <label for="text">Логин</label>
+            {{form.username}}
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="password">Пароль</label>
+            {{form.password}}
+        </div>
+        <br>
+        <button type="submit" class="btn btn-info">Войти</button>
+    </form>
+{% endblock %}

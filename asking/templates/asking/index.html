@@ -1,0 +1,39 @@
+{% extends 'asking/base.html' %}
+
+{% load static %}
+
+{% block title %}Последние вопросы{% endblock %}
+
+{% block content %}
+    <div class = "my-4 p-2">
+        <div class="row">
+            <div class = "col-6">
+                <a href = "#"><h2 class="text-center">Последние вопросы</h2></a>
+            </div>
+            <div class = "col-6">
+                <a href = "#"><h2 class="text-center">Популярные вопросы</h2></a>
+            </div>
+        </div>
+        {% if index %}
+            {% for a in index %}
+                <div class = "border rounded bg-light my-4 p-2">
+                    <a href="{% url 'question' a.id%}"><h3>{{a.ask_title}}</h3></a>
+                    <p>{{a.ask_explane}}</p>
+                    <div class = "row">
+                        <div class = "col-6">
+                            <p>{{a.ask_date}}</p>
+                        </div>
+                        <div class = "col-6">
+                            <p class = "text-end">{{a.asker_name}}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class = "border rounded bg-light my-4 p-2">
+                <h3>Вопросов нет :(</h3>
+            </div>
+        {% endif %}
+    </div>
+	
+{% endblock %}

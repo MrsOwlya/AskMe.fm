@@ -1,0 +1,33 @@
+{% extends 'asking/base.html' %}
+
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+    <h1 class = "text-center">Задайте свой вопрос</h1>
+    {% if form.errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+    {% endif %}
+    <form role = "form" method = "post">
+        {% csrf_token %}
+        <div class = "form-group">
+            <label for="question">Вопрос</label>
+            {{form.ask_title}}
+            <p class="help-block">Напишите краткую версию вопроса</p>
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="explane">Пояснение</label>
+            {{form.ask_explane}}
+            <p class="help-block">Напишите уточнения по своему вопросу</p>
+        </div>
+        <br>
+        <div class = "form-group">
+            <label for="tags">Теги</label>
+            {{form.ask_tags}}
+        </div>
+        <br>
+        <button type="submit" class="btn btn-info">Отправить</button>
+    </form>
+{% endblock %}

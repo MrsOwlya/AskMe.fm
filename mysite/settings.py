@@ -10,14 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os, sys
+import os
+from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # Полный путь к проекту
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-PROJECT_ROOT = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(PROJECT_ROOT, 'apps'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -30,20 +29,19 @@ SECRET_KEY = '3f8w8i)d2b#5y$dnj)wz9bhxk^95sg-57_wd1mf7g=&(%l*(-z' # Секрет
 DEBUG = True
 # Указываем доменные имена, где можно опубликовать сайт
 # Указываем доменные имена, где можно опубликовать сайт
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 # Список установленных в проект приложений
 INSTALLED_APPS = [
-    'asking.apps.AskingConfig',
-    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'asking',
 ]
 
 # Список промежуточного ПО
@@ -65,7 +63,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(PROJECT_ROOT, 'templates')
+            os.path.join(BASE_DIR, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -74,7 +72,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -98,7 +95,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_PROFILE_MODULE = 'accounts.User'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -117,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGIN_REDIRECT_URL = '/'
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -139,4 +136,7 @@ STATICFILES_DIRS = '../static/'
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(PROJECT_ROOT, 'static')]
+ROOT_PATH = os.path.dirname(__file__)
+STATICFILES_DIRS = [os.path.join(ROOT_PATH, 'static')]
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '../asking/')
