@@ -1,5 +1,7 @@
 {% load static %}
 
+
+
 <!DOCTYPE html>
 
 <html>
@@ -98,11 +100,13 @@
 					<div class = "border rounded bg-light mb-4">
 						<h2 class = "text-center">Популярные теги</h2>
                         {% block tags %}
+                            {% include 'asking/sidepanel.html' %}
                         {% endblock %}
 					</div>
 					<div class = "border rounded bg-light mb-4">
 						<h2 class = "text-center">Самые активные</h2>
-						{% block active_users %}
+                        {% block active_users %}
+                            {% include 'asking/sidepanel.html' %}
                         {% endblock %}
 					</div>
 				</div>

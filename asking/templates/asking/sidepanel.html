@@ -1,5 +1,3 @@
-{% extends 'asking/base.html' %}
-
 {% load static %}
 
 {% block tags %}
@@ -8,6 +6,14 @@
             <a href="{% url "index_tag" tag.slug %}">
                 {{ tag.name }}
             </a>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block active_users %}
+    {% if active_users %}
+        {% for u in active_users %}
+            <p>{{ tag.name }}</p>
         {% endfor %}
     {% endif %}
 {% endblock %}

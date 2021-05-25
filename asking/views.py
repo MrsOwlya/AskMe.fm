@@ -12,8 +12,12 @@ from taggit.models import Tag
 
 
 def hot_tags(request):
-	hot_tags = Ask.ask_tags.most_common()[:3]
-	return render(request, 'asking/tags.html', {'hot_tags': hot_tags})
+	hot_tags = Ask.ask_tags.most_common()[:5]
+	return render(request, 'asking/sidepanel.html', {'hot_tags': hot_tags})
+
+def active_users(request):
+	active_users = Account.objects.order_by('-user_rating')[:5]
+	return render(request, 'asking/base.html', {'active_users': active_users})
 
 class QuestDetailView(FormMixin, DetailView):
 	model = Ask
@@ -31,6 +35,9 @@ class QuestDetailView(FormMixin, DetailView):
 	def post(self, request, *args, **kwargs):
 		form = self.get_form()
 		if form.is_valid():
+			active = Account.objects.get(user=request.user)
+			active.user_rating += 1
+			active.save()
 			return self.form_valid(form)
 		else:
 			return self.form_invalid(form)
@@ -62,6 +69,9 @@ def ask(request):
 				tag = (str(tag)).replace(' ', '')
 				question.ask_tags.add(tag)
 			question.save()
+			active = Account.objects.get(user=request.user)
+			active.user_rating += 1
+			active.save()
 			return render(request, 'asking/index.html')
 		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
 	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
@@ -70,7 +80,7 @@ def index(request, flag=0, tag_slug=None):
 	if flag==0:
 		index = Ask.objects.order_by('-ask_date')
 		tag = None
-		title = "Последние ворпосы"
+		title = "Последние вопросы"
 		if tag_slug:
 			tag=get_object_or_404(Tag, slug=tag_slug)
 			title = "Вопросы с тегом "+str(tag)
@@ -80,7 +90,7 @@ def index(request, flag=0, tag_slug=None):
 	else:
 		index = Ask.objects.order_by('-ask_rating')
 		tag = None
-		title = "Популярные ворпосы"
+		title = "Популярные вопросы"
 		if tag_slug:
 			tag = get_object_or_404(Tag, slug=tag_slug)
 			title = "Вопросы с тегом "+str(tag)
