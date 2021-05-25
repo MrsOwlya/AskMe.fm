@@ -66,6 +66,7 @@ def index(request, flag=0, tag_slug=None):
 		title = "Последние ворпосы"
 		if tag_slug:
 			tag=get_object_or_404(Tag, slug=tag_slug)
+			title = "Вопросы с тегом "+str(tag)
 			index = index.filter(ask_tags__in=[tag])
 			return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
 		return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
@@ -75,6 +76,7 @@ def index(request, flag=0, tag_slug=None):
 		title = "Популярные ворпосы"
 		if tag_slug:
 			tag = get_object_or_404(Tag, slug=tag_slug)
+			title = "Вопросы с тегом "+str(tag)
 			index = index.filter(ask_tags__in=[tag])
 			return render(request, 'asking/index.html',
 						  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})

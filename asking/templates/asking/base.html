@@ -89,11 +89,12 @@
 				</div>
 				<div class="col-4 mt-3">
                     <div>
-                        <a href = "{% url 'index' %}"><h2 class="text-center">Последние вопросы</h2></a>
+                        <a href = "{% url 'index' %}"><h3>Последние вопросы</h3></a>
                     </div>
                     <div>
-                        <a href = "{% url 'index_hot' %}"><h2 class="text-center">Популярные вопросы</h2></a>
+                        <a href = "{% url 'index_hot' %}"><h3>Популярные вопросы</h3></a>
                     </div>
+                    <hr>
 					<div class = "border rounded bg-light mb-4">
 						<h2 class = "text-center">Популярные теги</h2>
                         {% block tags %}
