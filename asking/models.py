@@ -2,7 +2,7 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -20,7 +20,7 @@ class Ask(models.Model):
     asker_name = models.ForeignKey(User, on_delete=models.CASCADE)
     ask_explane = models.TextField(verbose_name=u'Пояснение вопроса')
     ask_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата публикации')
-    ask_tags = models.CharField(verbose_name=u'Тег', max_length=50)
+    ask_tags = TaggableManager()
     ask_rating = models.IntegerField(default=0, verbose_name=u'Рейтинг вопроса')
 
     def __str__(self):
@@ -49,13 +49,13 @@ class Answer(models.Model):
         verbose_name_plural = 'Ответы'
 
 
-class Tag(models.Model):
-    ask_id = models.ForeignKey(Ask, on_delete=models.CASCADE)
-    tag_name = models.CharField('Tag', max_length=50)
-    tag_rating = models.IntegerField(default = 1, verbose_name=u'Популярность тега')
-
-    def __str__(self):
-        return self.tag_name
+# class Tag(models.Model):
+#     ask_id = models.ForeignKey(Ask, on_delete=models.CASCADE)
+#     tag_name = models.CharField('Tag', max_length=50)
+#     tag_rating = models.IntegerField(default = 1, verbose_name=u'Популярность тега')
+#
+#     def __str__(self):
+#         return self.tag_name
 
 
 class Like(models.Model):

@@ -6,15 +6,21 @@
 
 {% block content %}
     <div class = "my-4 p-2">
-        <div class="row">
-            <div class = "col-6">
-                <a href = "#"><h2 class="text-center">Последние вопросы</h2></a>
-            </div>
-            <div class = "col-6">
-                <a href = "#"><h2 class="text-center">Популярные вопросы</h2></a>
-            </div>
-        </div>
         {% if index %}
+            {% if tag %}
+                <div class="row">
+                    <h2>Вопросы с тегом "{{ tag.name }}"</h2>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class = "col-6">
+                        <a href = "#"><h2 class="text-center">Последние вопросы</h2></a>
+                    </div>
+                    <div class = "col-6">
+                        <a href = "#"><h2 class="text-center">Популярные вопросы</h2></a>
+                    </div>
+                </div>
+            {% endif %}
             {% for a in index %}
                 <div class = "border rounded bg-light my-4 p-2">
                     <a href="{% url 'question' a.id%}"><h3>{{a.ask_title}}</h3></a>
@@ -27,7 +33,7 @@
                             <p>Ответов: {{quest.ask_answer.all.count}}</p>
                         </div>
                         <div class = "col-6">
-                            <p class = "text-end">{{a.asker_name}}</p>
+                            <p class = "text-end">Спрашивает: {{a.asker_name}}</p>
                         </div>
                     </div>
                 </div>

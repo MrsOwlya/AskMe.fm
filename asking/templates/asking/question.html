@@ -21,7 +21,15 @@
                 <p class="text-right">{{quest.ask_date}}</p>
             </div>
         </div>
-        <p>Теги: {{ quest.ask_tags }}</p>
+        <p class="tags">
+            Теги:
+            {% for tag in quest.ask_tags.all %}
+                <a href="{% url "index_tag" tag.slug %}">
+                    {{ tag.name }}
+                </a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
     </div>
 
 {% if user.is_authenticated %}

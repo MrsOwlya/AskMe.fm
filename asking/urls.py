@@ -12,7 +12,8 @@ urlpatterns = [
 	path('settings/', settings, name='settings'),
 	path('ask/', ask, name='ask'),
 	path('<int:pk>/', QuestDetailView.as_view(), name='question'),
-	path('logout/', logout, name='logout')
+	path('logout/', logout, name='logout'),
+	path('tag/<slug:tag_slug>/', index, name='index_tag'),
 ]
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()

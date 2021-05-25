@@ -83,7 +83,7 @@ class AskForm(forms.ModelForm):
     }))
     ask_tags = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder': 'Теги'
+        'placeholder': 'Теги (введите через запятую)'
     }))
 
     def clean(self):

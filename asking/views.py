@@ -1,15 +1,19 @@
 from django.db import IntegrityError
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-
 from .models import Ask, Answer, Account
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin, CreateView
+from taggit.models import Tag
 
+
+def hot_tags(request):
+	hot_tags = Ask.ask_tags.most_common()[:3]
+	return render(request, 'asking/tags.html', {'hot_tags': hot_tags})
 
 class QuestDetailView(FormMixin, DetailView):
 	model = Ask
@@ -45,15 +49,24 @@ def ask(request):
 	if request.method == 'POST':
 		form = AskForm(request.POST)
 		if form.is_valid():
-			question = Ask.objects.create(ask_title=request.POST.get('ask_title'), ask_explane=request.POST.get('ask_explane'), asker_name=request.user, ask_tags=request.POST.get('ask_tags'))
+			question = Ask.objects.create(ask_title=request.POST.get('ask_title'), ask_explane=request.POST.get('ask_explane'), asker_name=request.user)
+			tags = request.POST.get('ask_tags').split(",")
+			for tag in tags:
+				tag = (str(tag)).replace(' ', '')
+				question.ask_tags.add(tag)
 			question.save()
 			return render(request, 'asking/index.html')
-		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request)})
-	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request)})
+		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
+	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
 
-def index(request):
-	index = Ask.objects.order_by('-ask_date')[:5]
-	return render(request, 'asking/index.html', {'index': index, 'avatar': avatar(request)})
+def index(request, tag_slug=None):
+	index = Ask.objects.order_by('-ask_date')
+	tag = None
+	if tag_slug:
+		tag=get_object_or_404(Tag, slug=tag_slug)
+		index = index.filter(ask_tags__in=[tag])
+		return render(request, 'asking/index.html', {'index': index, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+	return render(request, 'asking/index.html', {'index': index, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
 
 def login_in(request):
 	form = LoginForm()
