@@ -21,6 +21,13 @@ class QuestDetailView(FormMixin, DetailView):
 	context_object_name = 'quest'
 	form_class = AnswerForm
 
+	def get(self, request, *args, **kwargs):
+		self.object = self.get_object()
+		self.object.ask_rating += 1
+		self.object.save()
+		context = self.get_context_data(object=self.object)
+		return self.render_to_response(context)
+
 	def post(self, request, *args, **kwargs):
 		form = self.get_form()
 		if form.is_valid():
