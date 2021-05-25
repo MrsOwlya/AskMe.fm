@@ -49,15 +49,6 @@ class Answer(models.Model):
         verbose_name_plural = 'Ответы'
 
 
-# class Tag(models.Model):
-#     ask_id = models.ForeignKey(Ask, on_delete=models.CASCADE)
-#     tag_name = models.CharField('Tag', max_length=50)
-#     tag_rating = models.IntegerField(default = 1, verbose_name=u'Популярность тега')
-#
-#     def __str__(self):
-#         return self.tag_name
-
-
 class Like(models.Model):
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

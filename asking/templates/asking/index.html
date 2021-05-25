@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %}Последние вопросы{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
     <div class = "my-4 p-2">
@@ -13,12 +13,7 @@
                 </div>
             {% else %}
                 <div class="row">
-                    <div class = "col-6">
-                        <a href = "#"><h2 class="text-center">Последние вопросы</h2></a>
-                    </div>
-                    <div class = "col-6">
-                        <a href = "#"><h2 class="text-center">Популярные вопросы</h2></a>
-                    </div>
+                    <h2>{{ title }}</h2>
                 </div>
             {% endif %}
             {% for a in index %}

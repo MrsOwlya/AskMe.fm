@@ -59,14 +59,32 @@ def ask(request):
 		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
 	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
 
-def index(request, tag_slug=None):
-	index = Ask.objects.order_by('-ask_date')
-	tag = None
-	if tag_slug:
-		tag=get_object_or_404(Tag, slug=tag_slug)
-		index = index.filter(ask_tags__in=[tag])
-		return render(request, 'asking/index.html', {'index': index, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
-	return render(request, 'asking/index.html', {'index': index, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+def index(request, flag=0, tag_slug=None):
+	if flag==0:
+		index = Ask.objects.order_by('-ask_date')
+		tag = None
+		title = "Последние ворпосы"
+		if tag_slug:
+			tag=get_object_or_404(Tag, slug=tag_slug)
+			index = index.filter(ask_tags__in=[tag])
+			return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+		return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+	else:
+		index = Ask.objects.order_by('-ask_rating')
+		tag = None
+		title = "Популярные ворпосы"
+		if tag_slug:
+			tag = get_object_or_404(Tag, slug=tag_slug)
+			index = index.filter(ask_tags__in=[tag])
+			return render(request, 'asking/index.html',
+						  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+		return render(request, 'asking/index.html',
+					  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+
+
+def index_hot(request):
+	return index(request, 1)
+
 
 def login_in(request):
 	form = LoginForm()
