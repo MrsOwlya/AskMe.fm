@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.shortcuts import render, get_object_or_404
 from django.contrib import auth
@@ -73,32 +74,28 @@ def ask(request):
 			active.user_rating += 1
 			active.save()
 			return render(request, 'asking/index.html')
-		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
-	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags})
+		return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags, 'active_users': active_users})
+	return render(request, 'asking/ask.html', {'form': form, 'avatar': avatar(request), 'hot_tags': hot_tags, 'active_users': active_users})
 
 def index(request, flag=0, tag_slug=None):
 	if flag==0:
 		index = Ask.objects.order_by('-ask_date')
 		tag = None
 		title = "Последние вопросы"
-		if tag_slug:
-			tag=get_object_or_404(Tag, slug=tag_slug)
-			title = "Вопросы с тегом "+str(tag)
-			index = index.filter(ask_tags__in=[tag])
-			return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
-		return render(request, 'asking/index.html', {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
 	else:
 		index = Ask.objects.order_by('-ask_rating')
 		tag = None
 		title = "Популярные вопросы"
-		if tag_slug:
-			tag = get_object_or_404(Tag, slug=tag_slug)
-			title = "Вопросы с тегом "+str(tag)
-			index = index.filter(ask_tags__in=[tag])
-			return render(request, 'asking/index.html',
-						  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
-		return render(request, 'asking/index.html',
-					  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags})
+	if tag_slug:
+		tag = get_object_or_404(Tag, slug=tag_slug)
+		title = "Вопросы с тегом "+str(tag)
+		index = index.filter(ask_tags__in=[tag])
+	paginator = Paginator(index, 3)
+	page_number = request.GET.get('page')
+	page_obj = paginator.get_page(page_number)
+	return render(request, 'asking/index.html',
+					  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags, \
+					   'active_users': active_users, 'page_obj': page_obj})
 
 
 def index_hot(request):
