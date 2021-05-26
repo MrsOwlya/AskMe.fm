@@ -50,7 +50,7 @@ class SignupForm(forms.ModelForm):
         'class': 'form-control',
         'placeholder': 'Повторите пароль'
     }))
-    user_avatar = forms.ImageField(widget=forms.FileInput(attrs={
+    user_avatar = forms.ImageField(required=False, widget=forms.FileInput(attrs={
         'class': 'form-control',
         'placeholder': 'Загрузите аватарку'
     }))
@@ -64,13 +64,15 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("Введите логин!")
         if not email or len(email) == 0:
             raise forms.ValidationError("Введите email!")
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Пользователь с таким email уже зарегистрирован!")
         if password != password2:
             raise forms.ValidationError("Пароли не совпадают!")
         return self.cleaned_data
 
     class Meta:
         model = Account
-        fields = ['username', 'email', 'password', 'user_avatar']
+        fields = ['username', 'email', 'password']
 
 class AskForm(forms.ModelForm):
     ask_title = forms.CharField(widget=forms.TextInput(attrs={

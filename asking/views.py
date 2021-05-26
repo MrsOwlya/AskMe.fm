@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.shortcuts import render, get_object_or_404
@@ -5,12 +6,23 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.views import View
+
 from .models import Ask, Answer, Account
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
 from django.views.generic import DetailView
 from django.views.generic.edit import FormMixin, CreateView
 from taggit.models import Tag
 
+
+def avatar(request):
+	avatar = None
+	try:
+		if request.user.is_authenticated:
+			avatar=Account.objects.get(user_id=request.user.id).user_avatar.url
+	except ValueError:
+		pass
+	return avatar
 
 def hot_tags(request):
 	hot_tags = Ask.ask_tags.most_common()[:5]
@@ -53,11 +65,24 @@ class QuestDetailView(FormMixin, DetailView):
 	def get_success_url(self, **kwargs):
 		return reverse_lazy('question', kwargs={'pk':self.get_object().id})
 
-class SignupView(CreateView):
-	model = Account
-	template_name = 'asking/signup.html'
-	form_class = SignupForm
-	success_url = 'asking/login.html'
+def signup(request):
+	alert = False
+	if request.method == "POST":
+		form = SignupForm(request.POST)
+		if form.is_valid():
+			try:
+				user = User.objects.create_user(username=request.POST.get('username'), email=request.POST.get('email'), password=request.POST.get('password'))
+				user.save()
+				user_pk = User.objects.get(id=user.pk)
+				user_avatar = Account(user=user_pk, user_avatar=request.POST.get('user_avatar'))
+				user_avatar.save()
+			except IntegrityError:
+				alert = False
+				return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
+		alert = True
+		return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
+	form = SignupForm()
+	return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
 
 def ask(request):
 	form = AskForm()
@@ -122,12 +147,3 @@ def logout(request):
 	if request.user.is_authenticated:
 		auth.logout(request)
 	return HttpResponseRedirect('/?continue=logout')
-
-def avatar(request):
-	avatar = None
-	try:
-		if request.user.is_authenticated:
-			avatar=Account.objects.get(user_id=request.user.id).user_avatar.url
-	except ValueError:
-		pass
-	return avatar
