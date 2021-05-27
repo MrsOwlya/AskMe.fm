@@ -59,7 +59,7 @@
                 {% else %}
                     <div class="container avatar-container col-md-4">
                             <div class="nav-item">
-
+                                <a class="nav-link" href="{% url 'ask' %}">Ask me!</a>
                             </div>
                             <div class="col-2 mr-4 ml-auto">
                                 <img class="rounded-circle" src="{% static "asking/img/noavatar.jpg" %}" style = "width: 90px">
@@ -120,5 +120,7 @@
 				</p>
 			</div>
 		</footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="{% static 'asking/js/ajax.js' %}"></script>
 	</body>
 </html>

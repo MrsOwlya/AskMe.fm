@@ -9,22 +9,22 @@
     <form role = "form">
         {% csrf_token %}
         <div class = "form-group">
-            <label for="email">Изменить email</label>
-            {{form.user_email}}
+            <label for="email">Изменить логин</label>
+            {{form.username}}
         </div>
         <br>
         <div class = "form-group">
-            <label for="login">Изменить логин</label>
-            {{form.user_login}}
+            <label for="login">Изменить email</label>
+            {{form.email}}
         </div>
         <br>
         <div class = "form-group">
             <label for="password">Изменить пароль</label>
-            {{form.user_password}}
+            {{form.password}}
         </div>
         <br>
         <div class = "form-group">
-            {{form.user_password2}}
+            {{form.password2}}
         </div>
         <br>
         <br>

@@ -21,15 +21,31 @@
                 <p class="text-right">{{quest.ask_date}}</p>
             </div>
         </div>
-        <p class="tags">
-            Теги:
-            {% for tag in quest.ask_tags.all %}
-                <a href="{% url "index_tag" tag.slug %}">
-                    {{ tag.name }}
-                </a>
-                {% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
+        <div class="row">
+            <div class="col-9">
+                <p class="tags">
+                    Теги:
+                    {% for tag in quest.ask_tags.all %}
+                        <a href="{% url "index_tag" tag.slug %}">
+                            {{ tag.name }}
+                        </a>
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        {% if user.is_authenticated %}
+            <div class = "col-3">
+                <div class="row">
+                    <div class="col-6">
+                        <button class="btn btn-default"><i class="fas fa-thumbs-up"></i></button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-default"><i class="fas fa-thumbs-down"></i></button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        </div>
     </div>
 
 {% if user.is_authenticated %}
@@ -50,30 +66,75 @@
 
 {% if quest.ask_answer.all %}
 	{% for b in quest.ask_answer.all %}
-
-        <div class="p-1 mb-2 bg-light border rounded">
-            <p class="font-weight-bold">{{b.answerer_name}}</p>
-            <p>{{b.answer_text}}</p>
-            <hr>
-            <div class="container">
+        {% if b.answer_is_right == True %}
+            <div class="p-1 mb-2 bg-success bg-gradient border rounded">
                 <div class="row">
-                    <div class="col-11">
-                        <p>{{b.answer_date}}</p>
+                    <div class="col-6">
+                        <p class="font-weight-bold">{{b.answerer_name}}</p>
                     </div>
-                    <div class="col-1">
-                        <div class="row">
-                            <div class="col-6">
-                                <button class="btn btn-default"><i class="fas fa-heart"></i></button>
-                            </div>
-                            <div class="col-6">
-                                <p>{{b.answer_likes}}</p>
-                            </div>
+                    <div class="col-6">
+                        <p class="text-right">Правильный ответ</p>
+                    </div>
+                </div>
+                <p>{{b.answer_text}}</p>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-9">
+                            <p>{{b.answer_date}}</p>
                         </div>
+                        {% if user.is_authenticated %}
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-secondary likes-button" answer="anslike" data-ans="{{ b.answer }}">
+                                            <strong><i class="fas fa-thumbs-up"></i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-secondary likes-button" answer="ansdislike" data-ans="{{ b.answer }}">
+                                            <strong><i class="fas fa-thumbs-down"></i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-	
+	    {% endif %}
+    {% endfor %}
+	{% for b in quest.ask_answer.all %}
+        {% if b.answer_is_right == False %}
+            <div class="p-1 mb-2 bg-light border rounded">
+                <p class="font-weight-bold">{{b.answerer_name}}</p>
+                <p>{{b.answer_text}}</p>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-9">
+                            <p>{{b.answer_date}}</p>
+                        </div>
+                        {% if user.is_authenticated %}
+                            <div class="col-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-secondary likes-button" answer="anslike" data-ans="{{ b.answer }}">
+                                            <strong><i class="fas fa-thumbs-up"></i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-secondary likes-button" answer="ansdislike" data-ans="{{ b.answer }}">
+                                            <strong><i class="fas fa-thumbs-down"></i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 	{% endfor %}
 
 {% else %}

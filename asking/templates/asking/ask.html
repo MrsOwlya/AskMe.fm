@@ -2,9 +2,10 @@
 
 {% load static %}
 
-{% block title %}Авторизация{% endblock %}
+{% block title %}Задать вопрос{% endblock %}
 
 {% block content %}
+    {% if user.is_authenticated %}
     <h1 class = "text-center">Задайте свой вопрос</h1>
     {% if form.errors %}
         <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
@@ -30,4 +31,12 @@
         <br>
         <button type="submit" class="btn btn-info">Отправить</button>
     </form>
+    {% else %}
+        <h2>
+            <a href="{% url 'login' %}">Войдите</a>
+             или
+            <a href="{% url 'signup' %}">зарегистрируйтесь</a>
+            , чтобы задать вопрос!
+        </h2>
+    {% endif %}
 {% endblock %}

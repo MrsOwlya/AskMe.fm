@@ -1,3 +1,5 @@
+from datetime import timezone, datetime
+
 from django.forms import Textarea
 
 from .models import Account, Ask, Answer
@@ -92,12 +94,16 @@ class AskForm(forms.ModelForm):
         ask_title = self.cleaned_data['ask_title']
         ask_explane = self.cleaned_data['ask_explane']
         ask_tags = self.cleaned_data['ask_tags']
+        early_quest = Ask.objects.all()
         if not ask_title or len(ask_title) == 0:
             raise forms.ValidationError("Введите вопрос!")
         if not ask_explane or len(ask_explane) == 0:
             raise forms.ValidationError("Введите пояснение!")
         if not ask_tags or len(ask_tags) == 0:
             raise forms.ValidationError("Введите теги!")
+        for e in early_quest:
+            if ask_title == e.ask_title and ask_explane == e.ask_explane:
+                raise ValidationError("Такой вопрос уже существует!")
         return self.cleaned_data
 
     class Meta:
