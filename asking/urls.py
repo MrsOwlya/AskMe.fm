@@ -1,20 +1,26 @@
 from django.urls import path
+
+from asking import views
 from mysite.settings import MEDIA_URL, MEDIA_ROOT
-from .views import index, ask, login_in, logout, QuestDetailView, settings, signup, index_hot
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.conf.urls import handler404
 
 urlpatterns = [
-	path('', index, name='index'),
-	path('hot/', index_hot, name='index_hot'),
-	path('login/', login_in, name='login'),
-	path('signup/', signup, name='signup'),
-	path('settings/', settings, name='settings'),
-	path('ask/', ask, name='ask'),
-	path('<int:pk>/', QuestDetailView.as_view(), name='question'),
-	path('logout/', logout, name='logout'),
-	path('tag/<slug:tag_slug>/', index, name='index_tag'),
+	path('hot_tags/', views.hot_tags, name='hot_tags'),
+	path('active_users/', views.active_users, name='active_users'),
+	path('<int:pk>/', views.QuestDetailView.as_view(), name='question'),
+	path('signup/', views.signup, name='signup'),
+	path('ask/', views.ask, name='ask'),
+	path('', views.index, name='index'),
+	path('hot/', views.index_hot, name='index_hot'),
+	path('login/', views.login_in, name='login'),
+	path('settings/', views.settings, name='settings'),
+	path('tag/<slug:tag_slug>/', views.index, name='index_tag'),
+	path('add_asklike/', views.add_asklike, name='add_asklike'),
+	path('add_anslike/', views.add_anslike, name='add_anslike'),
+	path('show_asklikes/', views.show_asklikes, name='show_asklikes'),
+	path('show_anslikes/', views.show_anslikes, name='show_anslikes'),
+	path('logout/', views.logout, name='logout'),
 ]
 urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()

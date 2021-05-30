@@ -8,20 +8,22 @@ from taggit.managers import TaggableManager
 
 class Account(models.Model):
     user = models.OneToOneField(User, related_name='account', null=False, verbose_name='Пользователь', on_delete=models.DO_NOTHING)
-    user_avatar = models.ImageField(null=True, blank=True, verbose_name=u'Аватарка', upload_to="static/asking/img")
-    user_rating = models.IntegerField(blank=True, default=0, verbose_name=u'Рейтинг')
+    user_avatar = models.ImageField(null=True, blank=True, verbose_name='Аватарка', upload_to="static/asking/img")
+    user_rating = models.IntegerField(blank=True, default=0, verbose_name='Рейтинг')
 
     def __str__(self):
         return self.user.username
 
 
 class Ask(models.Model):
-    ask_title = models.CharField(verbose_name=u'Вопрос', max_length=200)
+    ask_title = models.CharField(verbose_name='Вопрос', max_length=200)
     asker_name = models.ForeignKey(User, on_delete=models.CASCADE)
-    ask_explane = models.TextField(verbose_name=u'Пояснение вопроса')
-    ask_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата публикации')
+    ask_explane = models.TextField(verbose_name='Пояснение вопроса')
+    ask_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
     ask_tags = TaggableManager()
-    ask_rating = models.IntegerField(default=0, verbose_name=u'Рейтинг вопроса')
+    ask_likes = models.IntegerField(default=0, verbose_name='Кол-во лайков')
+    ask_dislikes = models.IntegerField(default=0, verbose_name='Кол-во дизлайков')
+    ask_rating = models.IntegerField(default=0, verbose_name='Рейтинг вопроса')
 
     def __str__(self):
         return self.ask_title
@@ -37,9 +39,10 @@ class Ask(models.Model):
 class Answer(models.Model):
     ask = models.ForeignKey(Ask, on_delete=models.CASCADE, related_name='ask_answer', null=True, blank=True)
     answerer_name = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    answer_text = models.TextField(verbose_name=u'Текст ответа')
-    answer_date = models.DateTimeField(auto_now_add=True, verbose_name=u'Дата ответа')
-    answer_likes = models.IntegerField(default=0, verbose_name=u'Кол-во лайков')
+    answer_text = models.TextField(verbose_name='Текст ответа')
+    answer_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата ответа')
+    answer_likes = models.IntegerField(default=0, verbose_name='Кол-во лайков')
+    answer_dislikes = models.IntegerField(default=0, verbose_name='Кол-во дизлайков')
     answer_is_right = models.BooleanField(default=False, verbose_name="Правильный ответ")
 
     def __str__(self):
@@ -51,19 +54,19 @@ class Answer(models.Model):
 
 
 class AnswerLike(models.Model):
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, related_name='answer_like', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    like = models.BooleanField(default=False, verbose_name=u'Кол-во лайков')
-    dislike = models.BooleanField(default=False, verbose_name=u'Кол-во дизлайков')
+    like = models.BooleanField(default=False, verbose_name='Лайк')
+    dislike = models.BooleanField(default=False, verbose_name='Дизлайк')
 
     def __str__(self):
-        return self.answer
+        return str(self.answer)
 
 class AskLike(models.Model):
-    ask = models.ForeignKey(Ask, on_delete=models.CASCADE)
+    ask = models.ForeignKey(Ask, related_name='ask_like', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    like = models.BooleanField(default=False, verbose_name=u'Кол-во лайков')
-    dislike = models.BooleanField(default=False, verbose_name=u'Кол-во дизлайков')
+    like = models.BooleanField(default=False, verbose_name='Лайк')
+    dislike = models.BooleanField(default=False, verbose_name='Дизлайк')
 
     def __str__(self):
-        return self.ask
+        return str(self.ask)

@@ -1,19 +1,19 @@
 {% load static %}
 
-{% block tags %}
-    {% if hot_tags %}
+{% block sidepanel %}
+    <div class = "border rounded bg-light mb-4">
+        <h2 class = "text-center">Популярные теги</h2>
         {% for tag in hot_tags %}
             <a href="{% url "index_tag" tag.slug %}">
                 {{ tag.name }}
             </a>
         {% endfor %}
-    {% endif %}
+    </div>
+    <div class = "border rounded bg-light mb-4">
+        <h2 class = "text-center">Самые активные</h2>
+        {% for u in active %}
+            <p>{{ u.username }}</p>
+        {% endfor %}
+    </div>
 {% endblock %}
 
-{% block active_users %}
-    {% if active_users %}
-        {% for u in active_users %}
-            <p>{{ tag.name }}</p>
-        {% endfor %}
-    {% endif %}
-{% endblock %}

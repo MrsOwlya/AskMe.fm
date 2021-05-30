@@ -7,6 +7,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Ask, Answer, Account, AskLike, AnswerLike
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
@@ -27,15 +28,16 @@ def avatar(request):
 
 def hot_tags(request):
     hot_tags = Ask.ask_tags.most_common()[:5]
-    return render(request, 'asking/sidepanel.html', {'hot_tags': hot_tags})
+    return JsonResponse({'hot_tags': hot_tags})
 
 
 def active_users(request):
-    right_answers = Answer.objects.get(answer_is_right=True)
-    for i in right_answers.count():
+    right_answers = Answer.objects.all().filter(answer_is_right=True)
+    for i in right_answers:
         Account.objects.get(user=i.answerer_name).user_rating += 1
+        Account.objects.get(user=i.answerer_name).save()
     active = Account.objects.order_by('-user_rating')[:5]
-    return render(request, 'asking/base.html', {'active': active})
+    return JsonResponse({'active': active})
 
 
 class QuestDetailView(FormMixin, DetailView):
@@ -60,7 +62,6 @@ class QuestDetailView(FormMixin, DetailView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('question', kwargs={'pk': self.get_object().id})
-
 
 def signup(request):
     alert = False
@@ -160,12 +161,9 @@ def settings(request):
     pass
 
 
-def asklikes(request, ask, like_dis):
-    asklike = AskLike.objects.get(user=request.user, ask=ask)
+def asklikes(request, current_ask, like_dis):
     try:
-        if not asklike or asklike.like == False and asklike.dislike == False:
-            return False
-    except ObjectDoesNotExist:
+        asklike = AskLike.objects.get(user=request.user, ask=current_ask)
         if like_dis == 'asklike':
             if asklike.like == False:
                 asklike.like = True
@@ -179,17 +177,30 @@ def asklikes(request, ask, like_dis):
             else:
                 asklike.dislike = False
         asklike.save()
-        ask.ask_rating = asklike.filter(like=True).count() - asklike.filter(dislike=True).count()
-        ask.save()
+        current_ask.ask_likes = AskLike.objects.filter(ask=current_ask, like=True).count()
+        current_ask.ask_dislikes = AskLike.objects.filter(ask=current_ask, dislike=True).count()
+        current_ask.ask_rating = current_ask.ask_likes - current_ask.ask_dislikes
+        current_ask.save()
+        return False
+    except ObjectDoesNotExist:
+        if like_dis == 'asklike':
+            like = True
+            dislike = False
+        else:
+            dislike = True
+            like = False
+        asklike = AskLike(user=request.user, ask=current_ask, like=like, dislike=dislike)
+        asklike.save()
+        current_ask.ask_likes = AskLike.objects.filter(ask=current_ask, like=True).count()
+        current_ask.ask_dislikes = AskLike.objects.filter(ask=current_ask, dislike=True).count()
+        current_ask.ask_rating = current_ask.ask_likes - current_ask.ask_dislikes
+        current_ask.save()
         return True
 
 
-def answerlikes(request, answer, like_dis):
-    anslike = AnswerLike.objects.get(user=request.user, answer=answer)
+def answerlikes(request, current_answer, like_dis):
     try:
-        if not anslike or anslike.like == False and anslike.dislike == False:
-            return False
-    except ObjectDoesNotExist:
+        anslike = AnswerLike.objects.get(user=request.user, answer=current_answer)
         if like_dis == 'anslike':
             if anslike.like == False:
                 anslike.like = True
@@ -203,34 +214,79 @@ def answerlikes(request, answer, like_dis):
             else:
                 anslike.dislike = False
         anslike.save()
+        current_answer.answer_likes = AnswerLike.objects.filter(answer=current_answer, like=True).count()
+        current_answer.answer_dislikes = AnswerLike.objects.filter(answer=current_answer, dislike=True).count()
+        current_answer.save()
+        return False
+    except ObjectDoesNotExist:
+        if like_dis == 'anslike':
+            like = True
+            dislike = False
+        else:
+            dislike = True
+            like = False
+        anslike = AnswerLike(user=request.user, answer=current_answer, like=like, dislike=dislike)
+        anslike.save()
+        current_answer.answer_likes = AnswerLike.objects.filter(answer=current_answer, like=True).count()
+        current_answer.answer_dislikes = AnswerLike.objects.filter(answer=current_answer, dislike=True).count()
+        current_answer.save()
         return True
 
-
+@csrf_exempt
 def add_asklike(request):
     if request.method == 'POST':
-        ask = request.POST['ask_id']
-        like_dis = request.POST['ask_like']
-        likes_ask = AskLike.objects.filter(ask=ask, like=True).count()
-        dis_ask = AskLike.objects.filter(ask=ask, dislike=True).count()
-        if asklikes(request, ask, like_dis):
-            likes_ask = AskLike.objects.filter(ask=ask, like=True).count()
-            dis_ask = AskLike.objects.filter(ask=ask, dislike=True).count()
-            return JsonResponse({'asklikes': likes_ask, 'askdislikes': dis_ask, 'ask_rating': ask.ask_rating})
-        return JsonResponse({'asklikes': likes_ask, 'askdislikes': dis_ask, 'ask_rating': ask.ask_rating})
+        ask = request.POST['answer_id']
+        current_ask = Ask.objects.get(id=ask)
+        like_dis = request.POST['answer']
+        try:
+            AskLike.objects.get(user=request.user, ask=current_ask, like=False, dislike=False).delete()
+        except:
+            pass
+        if asklikes(request, current_ask, like_dis):
+            return JsonResponse({'asklikes': current_ask.ask_likes, 'askdislikes': current_ask.ask_dislikes})
+        return JsonResponse({'asklikes': current_ask.ask_likes, 'askdislikes': current_ask.ask_dislikes})
 
-
+@csrf_exempt
 def add_anslike(request):
     if request.method == 'POST':
-        answer = request.POST['ask_id']
-        like_dis = request.POST['ask_like']
-        likes_ans = AskLike.objects.filter(answer=answer, like=True).count()
-        dis_ans = AskLike.objects.filter(answer=answer, dislike=True).count()
-        if answerlikes(request, answer, like_dis):
-            likes_ans = AskLike.objects.filter(answer=answer, like=True).count()
-            dis_ans = AskLike.objects.filter(answer=answer, dislike=True).count()
-            return JsonResponse({'anslikes': likes_ans, 'ansdislikes': dis_ans})
-        return JsonResponse({'anslikes': likes_ans, 'ansdislikes': dis_ans})
+        answer = request.POST['answer_id']
+        current_answer = Answer.objects.get(id=answer)
+        like_dis = request.POST['answer']
+        try:
+            AnswerLike.objects.get(user=request.user, answer=current_answer, like=False, dislike=False).delete()
+        except:
+            pass
+        if answerlikes(request, current_answer, like_dis):
+            return JsonResponse({'anslikes': current_answer.answer_likes, 'ansdislikes': current_answer.answer_dislikes})
+        return JsonResponse({'anslikes': current_answer.answer_likes, 'ansdislikes': current_answer.answer_dislikes})
 
+@csrf_exempt
+def show_asklikes(request):
+    if request.method == 'POST':
+        ask = request.POST['ask_id']
+        current_ask = Ask.objects.get(id=ask)
+        try:
+            a = AskLike.objects.get(ask=current_ask, user=request.user)
+            like = a.like
+            dislike = a.dislike
+        except:
+            like = False
+            dislike = False
+    return JsonResponse({'like': like, 'dislike': dislike})
+
+@csrf_exempt
+def show_anslikes(request):
+    if request.method == 'POST':
+        ans = request.POST['answer_id']
+        current_answer = Answer.objects.get(id=ans)
+        try:
+            a = AnswerLike.objects.get(answer=current_answer, user=request.user)
+            like = a.like
+            dislike = a.dislike
+        except:
+            like = False
+            dislike = False
+    return JsonResponse({'like': like, 'dislike': dislike})
 
 def logout(request):
     if request.user.is_authenticated:
