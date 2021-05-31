@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Ask, Answer, Account, AskLike, AnswerLike
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView, DeleteView
 from django.views.generic.edit import FormMixin
 from taggit.models import Tag
 
@@ -25,19 +25,21 @@ def avatar(request):
         pass
     return avatar
 
-
+@csrf_exempt
 def hot_tags(request):
-    hot_tags = Ask.ask_tags.most_common()[:5]
-    return JsonResponse({'hot_tags': hot_tags})
-
-
+    pass
+#     hot_tags = Ask.ask_tags.most_common()[:5]
+#     return JsonResponse(dict(hottag=list(hot_tags)))
+#
+@csrf_exempt
 def active_users(request):
-    right_answers = Answer.objects.all().filter(answer_is_right=True)
-    for i in right_answers:
-        Account.objects.get(user=i.answerer_name).user_rating += 1
-        Account.objects.get(user=i.answerer_name).save()
-    active = Account.objects.order_by('-user_rating')[:5]
-    return JsonResponse({'active': active})
+    pass
+#     right_answers = Answer.objects.all().filter(answer_is_right=True)
+#     for i in right_answers:
+#         Account.objects.get(user=i.answerer_name).user_rating += 1
+#         Account.objects.get(user=i.answerer_name).save()
+#     active = Account.objects.order_by('-user_rating')[:5]
+#     return JsonResponse(dict(actusers=list(active)))
 
 
 class QuestDetailView(FormMixin, DetailView):
@@ -63,17 +65,50 @@ class QuestDetailView(FormMixin, DetailView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('question', kwargs={'pk': self.get_object().id})
 
+    def get_context_data(self, **kwargs):
+        context = super(QuestDetailView, self).get_context_data(**kwargs)
+        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        return context
+
+class QuestUpdateView(UpdateView):
+    model = Ask
+    template_name = 'asking/ask.html'
+
+    form_class = AskForm
+
+class QuestDeleteView(DeleteView):
+    model = Ask
+    template_name = 'asking/question.html'
+    success_url = '/hot/'
+
+class AnsUpdateView(UpdateView):
+    model = Answer
+    template_name = 'asking/question.html'
+
+    form_class = AnswerForm
+
+class AnsDeleteView(DeleteView):
+    model = Answer
+    template_name = 'asking/question.html'
+
+    def get_success_url(self, **kwargs):
+        ask = self.object.ask
+        return reverse_lazy('question', kwargs={'pk': ask.id})
+
 def signup(request):
     alert = False
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 user = User.objects.create_user(username=request.POST.get('username'), email=request.POST.get('email'),
                                                 password=request.POST.get('password'))
                 user.save()
                 user_pk = User.objects.get(id=user.pk)
-                user_avatar = Account(user=user_pk, user_avatar=request.POST.get('user_avatar'))
+                try:
+                    user_avatar = Account(user=user_pk, user_avatar=request.FILES.get('user_avatar'))
+                except ObjectDoesNotExist:
+                    user_avatar = Account(user=user_pk, user_avatar="static/asking/img/noavatar.jpg")
                 user_avatar.save()
             except IntegrityError:
                 alert = False
@@ -142,23 +177,25 @@ def login_in(request):
 
 
 def settings(request):
-    # if request.method == 'POST':
-    # 	form = SignupForm(request.POST)
-    # 	if form.is_valid():
-    # 		request.user.username = request.POST.get('username')
-    # 		request.user.email = request.POST.get('username')
-    # 		request.user.set_password(request.POST.get('password'))
-    # 		request.user.account.user_avatar = request.FILES.get('user_avatar')
-    # 		request.user.save()
-    # 		request.user.account.save()
-    # 		auth.authenticate(username=request.POST.get['username'], password=request.POST.get['password'])
-    # 	return render(request, 'asking/settings.html', {'form': form, 'avatar': avatar(request)})
-    # username = request.POST.get('username')
-    # email = request.POST.get('username')
-    # user_avatar = request.FILES.get('user_avatar')
-    # form = SignupForm({'username': username, 'email': email, 'user_avatar': user_avatar})
-    # return render(request, 'asking/settings.html', {'username': username, 'email': email, 'form': form, 'avatar': avatar(request)})
-    pass
+    if request.method == 'POST':
+        form = SignupForm(request.POST, request.FILES)
+        if form.is_valid():
+            request.user.username = request.POST.get('username')
+            request.user.email = request.POST.get('email')
+            request.user.set_password(request.POST.get('password'))
+            request.user.account.user_avatar = request.FILES.get('user_avatar')
+            request.user.save()
+            request.user.account.save()
+            user = auth.authenticate(username=request.POST.get['username'], password=request.POST.get['password'])
+            if user is not None:
+                auth.login(request.user)
+        return render(request, 'asking/settings.html', {'form': form, 'avatar': avatar(request)})
+    userdata = User.objects.get(id=request.user.id)
+    username = userdata.username
+    email = userdata.email
+    user_avatar = Account.objects.get(user=userdata).user_avatar
+    form = SignupForm({'username': username, 'email': email, 'user_avatar': user_avatar})
+    return render(request, 'asking/settings.html', {'username': username, 'email': email, 'form': form, 'avatar': avatar(request)})
 
 
 def asklikes(request, current_ask, like_dis):
@@ -287,6 +324,20 @@ def show_anslikes(request):
             like = False
             dislike = False
     return JsonResponse({'like': like, 'dislike': dislike})
+
+@csrf_exempt
+def rightans(request):
+    if request.method == 'POST':
+        ans = request.POST['answer_id']
+        answer = request.POST['answer']
+        current_answer = Answer.objects.get(id=ans)
+        if answer == 'right':
+            current_answer.answer_is_right = True
+        else:
+            current_answer.answer_is_right = False
+        current_answer.save()
+        return JsonResponse({'status': "ok"})
+
 
 def logout(request):
     if request.user.is_authenticated:
