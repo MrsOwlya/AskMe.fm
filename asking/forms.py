@@ -102,7 +102,7 @@ class AskForm(forms.ModelForm):
         if not ask_tags or len(ask_tags) == 0:
             raise forms.ValidationError("Введите теги!")
         for e in early_quest:
-            if ask_title == e.ask_title and ask_explane == e.ask_explane:
+            if ask_title == e.ask_title and ask_explane == e.ask_explane and ask_tags == e.ask_tags:
                 raise ValidationError("Такой вопрос уже существует!")
         return self.cleaned_data
 

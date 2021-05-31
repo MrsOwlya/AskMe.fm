@@ -96,7 +96,7 @@ DATABASES = {
     }
 }
 
-AUTH_PROFILE_MODULE = 'accounts.User'
+AUTH_PROFILE_MODULE = 'accounts.Account'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -133,11 +133,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATICFILES_DIRS = '../static/'
 
+STATICFILES_DIRS = '../static/'
 STATIC_URL = '/static/'
 
 ROOT_PATH = os.path.dirname(__file__)
-STATICFILES_DIRS = [os.path.join(ROOT_PATH, 'static')]
+STATICFILES_DIRS = [os.path.join(ROOT_PATH, 'static/')]
 MEDIA_URL = '/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '../asking/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'asking/')

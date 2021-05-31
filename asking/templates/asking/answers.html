@@ -1,0 +1,185 @@
+
+{% load static %}
+
+{% block answers %}
+
+{% if user.is_authenticated %}
+    {% if form.errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+    {% endif %}
+    <hr>
+    <form role="form" method="post">
+        {% csrf_token %}
+        <p class = "font-weight-bold">Введите ответ<p>
+        {{ form.answer_text }}<br>
+	    <button type="submit" class="btn btn-info">Ответить</button>
+    </form>
+
+{% else %}
+    <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
+{% endif %}
+
+<div id = "answerblock">
+{% if quest.ask_answer.all %}
+	{% for b in quest.ask_answer.all|dictsort:"answer_date" reversed %}
+        {% if b.answer_is_right == True %}
+            <div class="p-1 mb-2 bg-success bg-gradient border rounded">
+            {% if quest.asker_name == user %}
+                <div class="row">
+                    <div class="col-9">
+                        <p class="font-weight-bold">{{b.answerer_name}}</p>
+                    </div>
+                    <div class="col-2 right_button" data-ans="{{ b.id }}" answer="deright">
+                        <button class="btn btn-sussess" type="submit"><p style="color:white">Снять отметку</p></button>
+                    </div>
+                    <div class="col-1">
+                        <i class="fas fa-3x fa-check-circle" style="color:white"></i>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row">
+                    <div class="col-11">
+                        <p class="font-weight-bold">{{b.answerer_name}}</p>
+                    </div>
+                    <div class="col-1">
+                        <i class="fas fa-3x fa-check-circle" style="color:white"></i>
+                    </div>
+                </div>
+            {% endif %}
+                <p>{{b.answer_text}}</p>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                    {% if b.answerer_name == user %}
+                        <div class="col-8">
+                            <p>{{b.answer_date}}</p>
+                        </div>
+                        <div class="col-1">
+                            <a href="{% url 'ansupdate' b.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                        </div>
+                        <div class="col-1">
+                            <form action="{% url 'ansdelete' b.id%}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" onclick="deleteans()"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="col-10">
+                            <p>{{b.answer_date}}</p>
+                        </div>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <div class="col-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-info anslikes-button" answer="anslike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-info anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button disabled class="btn btn-secondary anslikes-button" answer="anslike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button disabled class="btn btn-secondary anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+	    {% endif %}
+    {% endfor %}
+	{% for b in quest.ask_answer.all|dictsort:"answer_date" reversed %}
+        {% if b.answer_is_right == False %}
+            <div class="p-1 mb-2 bg-light border rounded">
+                {% if quest.asker_name == user %}
+                        <div class="row">
+                            <div class="col-10">
+                                <p class="font-weight-bold">{{b.answerer_name}}</p>
+                            </div>
+                            <div class="col-2 right_button" data-ans="{{ b.id }}" answer="right">
+                                <button class="btn btn-success" type="submit">Правильно!</button>
+                            </div>
+                        </div>
+                {% else %}
+                    <p class="font-weight-bold">{{b.answerer_name}}</p>
+                {% endif %}
+                <p>{{b.answer_text}}</p>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        {% if b.answerer_name == user %}
+                        <div class="col-8">
+                            <p>{{b.answer_date}}</p>
+                        </div>
+                        <div class="col-1">
+                            <a href="{% url 'ansupdate' b.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                        </div>
+                        <div class="col-1">
+                            <form action="{% url 'ansdelete' b.id%}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" onclick="deleteans()"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="col-10">
+                            <p>{{b.answer_date}}</p>
+                        </div>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <div class="col-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-info anslikes-button" answer="anslike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-info anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button disabled class="btn btn-secondary anslikes-button" answer="anslike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button disabled class="btn btn-secondary anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
+                                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+	{% endfor %}
+{% else %}
+	На этот вопрос еще никто не ответил :(
+{% endif %}
+    </div>
+
+{% endblock %}

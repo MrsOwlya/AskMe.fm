@@ -8,7 +8,7 @@ from taggit.managers import TaggableManager
 
 class Account(models.Model):
     user = models.OneToOneField(User, related_name='account', null=False, verbose_name='Пользователь', on_delete=models.DO_NOTHING)
-    user_avatar = models.ImageField(null=True, blank=True, verbose_name='Аватарка', upload_to="static/asking/img")
+    user_avatar = models.ImageField(null=True, blank=True, verbose_name='Аватарка', upload_to='static/asking/img/')
     user_rating = models.IntegerField(blank=True, default=0, verbose_name='Рейтинг')
 
     def __str__(self):
@@ -27,6 +27,9 @@ class Ask(models.Model):
 
     def __str__(self):
         return self.ask_title
+
+    def get_absolute_url(self):
+        return f'/{self.id}/'
 
     def was_asked_earlier(self):
         return self.ask_date >= (timezone.now() - datetime.timedelta(days=7))
@@ -47,6 +50,9 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.answer_text
+
+    def get_absolute_url(self):
+        return f'/{self.ask.id}/'
 
     class Meta:
         verbose_name = 'Ответ'
