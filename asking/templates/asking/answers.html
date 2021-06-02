@@ -21,7 +21,7 @@
 
 <div id = "answerblock">
 {% if quest.ask_answer.all %}
-	{% for b in quest.ask_answer.all|dictsort:"answer_date" reversed %}
+	{% for b in page_obj %}
         {% if b.answer_is_right == True %}
             <div class="p-2 mb-4 bg-success bg-gradient border rounded">
                 <div class="row">
@@ -97,7 +97,7 @@
             </div>
         {% endif %}
     {% endfor %}
-	{% for b in quest.ask_answer.all|dictsort:"answer_date" reversed %}
+	{% for b in page_obj %}
         {% if b.answer_is_right == False %}
             <div class="p-1 mb-2 bg-light border rounded">
                 <div class="row">
@@ -172,6 +172,33 @@
             </div>
         {% endif %}
 	{% endfor %}
+    {% if page_obj.has_other_pages %}
+        <nav>
+            <ul class="pagination justify-content-left">
+                {% if page_obj.has_previous %}
+                    <li class="page_item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+                    </li>
+                {% endif %}
+                {% for p in page_obj.paginator.page_range %}
+                    {% if page_obj.number == p %}
+                        <li class = "page-item active">
+                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                        <li class = "page-item">
+                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page_item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">&gt;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% else %}
 	На этот вопрос еще никто не ответил :(
 {% endif %}

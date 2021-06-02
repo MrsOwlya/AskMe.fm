@@ -9,10 +9,11 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.list import MultipleObjectMixin
 
 from .models import Ask, Answer, Account, AskLike, AnswerLike
 from .forms import SignupForm, LoginForm, AskForm, AnswerForm
-from django.views.generic import DetailView, UpdateView, DeleteView
+from django.views.generic import DetailView, UpdateView, DeleteView, ListView
 from django.views.generic.edit import FormMixin
 from taggit.models import Tag
 
@@ -33,7 +34,7 @@ def hot_tags(request):
         hott = {}
         b = a.slug
         c = a.name
-        hott[b]=c
+        hott[b] = c
         hot_list.append(hott)
     return JsonResponse(hot_list, safe=False)
 
@@ -50,12 +51,12 @@ def active_users(request):
         actus.append(c)
     return JsonResponse(actus, safe=False)
 
-
-class QuestDetailView(FormMixin, DetailView):
+class QuestDetailView(FormMixin, DetailView, MultipleObjectMixin):
     model = Ask
     template_name = 'asking/question.html'
     context_object_name = 'quest'
     form_class = AnswerForm
+    paginate_by = 2
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -75,7 +76,8 @@ class QuestDetailView(FormMixin, DetailView):
         return reverse_lazy('question', kwargs={'pk': self.get_object().id})
 
     def get_context_data(self, **kwargs):
-        context = super(QuestDetailView, self).get_context_data(**kwargs)
+        object_list = Answer.objects.filter(ask=self.get_object()).order_by('-answer_date')
+        context = super(QuestDetailView, self).get_context_data(object_list=object_list, **kwargs)
         context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
         return context
 

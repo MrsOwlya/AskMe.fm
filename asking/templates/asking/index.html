@@ -40,13 +40,13 @@
             {% for a in page_obj %}
                 <div class = "border rounded bg-light my-4 p-2">
                     <a href="{% url 'question' a.id%}"><h3>{{a.ask_title}}</h3></a>
-                    <p>{{a.ask_explane}}</p>
+                    <p class="d-inline-block text-truncate" style="max-width:800px;">{{a.ask_explane}}</p>
                     <div class = "row">
                         <div class = "col-3">
                             <p>{{a.ask_date}}</p>
                         </div>
                         <div class = "col-3">
-                            <p>Ответов: {{quest.ask_answer.all.count}}</p>
+                            <p>Ответов: {{a.ask_answer.all.count}}</p>
                         </div>
                         <div class = "col-6">
                             <p class = "text-end">Спрашивает: {{a.asker_name}}</p>
