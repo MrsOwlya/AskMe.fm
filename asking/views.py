@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db import IntegrityError
@@ -25,21 +26,29 @@ def avatar(request):
         pass
     return avatar
 
-@csrf_exempt
 def hot_tags(request):
-    pass
-#     hot_tags = Ask.ask_tags.most_common()[:5]
-#     return JsonResponse(dict(hottag=list(hot_tags)))
-#
-@csrf_exempt
+    hot_tags = Ask.ask_tags.most_common()[:5]
+    hot_list = []
+    for a in hot_tags:
+        hott = {}
+        b = a.slug
+        c = a.name
+        hott[b]=c
+        hot_list.append(hott)
+    return JsonResponse(hot_list, safe=False)
+
 def active_users(request):
-    pass
-#     right_answers = Answer.objects.all().filter(answer_is_right=True)
-#     for i in right_answers:
-#         Account.objects.get(user=i.answerer_name).user_rating += 1
-#         Account.objects.get(user=i.answerer_name).save()
-#     active = Account.objects.order_by('-user_rating')[:5]
-#     return JsonResponse(dict(actusers=list(active)))
+    right_answers = Answer.objects.all().filter(answer_is_right=True)
+    for i in right_answers:
+        Account.objects.get(user=i.answerer_name).user_rating += 1
+        Account.objects.get(user=i.answerer_name).save()
+    active = Account.objects.order_by('-user_rating')[:5]
+    actus = []
+    for a in active:
+        b = a.user
+        c = b.username
+        actus.append(c)
+    return JsonResponse(actus, safe=False)
 
 
 class QuestDetailView(FormMixin, DetailView):
@@ -76,6 +85,11 @@ class QuestUpdateView(UpdateView):
 
     form_class = AskForm
 
+    def get_context_data(self, **kwargs):
+        context = super(QuestUpdateView, self).get_context_data(**kwargs)
+        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        return context
+
 class QuestDeleteView(DeleteView):
     model = Ask
     template_name = 'asking/question.html'
@@ -86,6 +100,11 @@ class AnsUpdateView(UpdateView):
     template_name = 'asking/question.html'
 
     form_class = AnswerForm
+
+    def get_context_data(self, **kwargs):
+        context = super(AnsUpdateView, self).get_context_data(**kwargs)
+        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        return context
 
 class AnsDeleteView(DeleteView):
     model = Answer

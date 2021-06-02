@@ -24,17 +24,6 @@ $(document).ready(function(){
             });
         });
 
-        // $.post('/hot_tags/', function(data) {
-        //     $.each(data.hottag, function(hottag){
-        //         $('.hot_tags').html('<a href="{% url "index_tag"'+hottag.slug+'">'+hottag.name+'</a>');
-        //     });
-        // });
-        //
-        // $.post('/active_users/', function(data) {
-        //     $.each(data.actusers, function(actusers){
-        //         $('.hot_tags').html('<p>'+actusers.username+'</p>');
-        //     });
-        // });
 });
 
 $('.right_button').click(function(){
@@ -115,6 +104,32 @@ $('.asklikes-button').click(function(){
         $('#likeask' + ans).text(data.asklikes);
         $('#disask' + ans).text(data.askdislikes);
     });
+});
+
+$.ajax({
+    type: 'GET',
+    url: '/active_users/',
+    dataType: 'json',
+    cache: 'false',
+    success: function (result){
+        $.each(result, function(index, value){
+            $('.active_users'+index).html('<p>'+value+'</p>');
+        })
+    }
+});
+
+$.ajax({
+    type: 'GET',
+    url: '/hot_tags/',
+    dataType: 'json',
+    cache: 'false',
+    success: function (result){
+        result.forEach(function (eachObj, index){
+            for (var key in eachObj) {
+                $('.hot_tags'+index).html('<a href="\{\% url \'index_tag\' '+key+' \%\}">'+key+'</a>');
+            }
+        });
+    }
 });
 
 function deleteask(){

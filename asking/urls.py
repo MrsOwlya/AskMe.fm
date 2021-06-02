@@ -6,8 +6,8 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-	#path('hot_tags/', views.hot_tags, name='hot_tags'),
-	#path('active_users/', views.active_users, name='active_users'),
+	path('hot_tags/', views.hot_tags, name='hot_tags'),
+	path('active_users/', views.active_users, name='active_users'),
 	path('<int:pk>/', views.QuestDetailView.as_view(), name='question'),
 	path('<int:pk>/update', views.QuestUpdateView.as_view(), name='askupdate'),
 	path('<int:pk>/delete', views.QuestDeleteView.as_view(), name='askdelete'),
