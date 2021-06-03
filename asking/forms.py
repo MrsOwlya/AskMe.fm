@@ -64,10 +64,14 @@ class SignupForm(forms.ModelForm):
         password2 = self.cleaned_data['password2']
         if not username or len(username) == 0:
             raise forms.ValidationError("Введите логин!")
+        if len(username) <=3 or len(username) >= 20:
+            raise forms.ValidationError("Некорректный логин!")
         if not email or len(email) == 0:
             raise forms.ValidationError("Введите email!")
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Пользователь с таким email уже зарегистрирован!")
+        if len(password) <= 8:
+            raise forms.ValidationError("Пароль слишком короткий!")
         if password != password2:
             raise forms.ValidationError("Пароли не совпадают!")
         return self.cleaned_data
@@ -97,10 +101,18 @@ class AskForm(forms.ModelForm):
         early_quest = Ask.objects.all()
         if not ask_title or len(ask_title) == 0:
             raise forms.ValidationError("Введите вопрос!")
+        if len(ask_title) >= 80:
+            raise forms.ValidationError("Слишком длинный ворпос!")
         if not ask_explane or len(ask_explane) == 0:
             raise forms.ValidationError("Введите пояснение!")
         if not ask_tags or len(ask_tags) == 0:
             raise forms.ValidationError("Введите теги!")
+        tags_count = ask_tags.split(',')
+        count = 0
+        for tag in tags_count:
+            count = count + 1
+        if count > 3:
+            raise forms.ValidationError("Введите не более трех тегов!")
         for e in early_quest:
             if ask_title == e.ask_title and ask_explane == e.ask_explane and ask_tags == e.ask_tags:
                 raise ValidationError("Такой вопрос уже существует!")
@@ -121,6 +133,8 @@ class AnswerForm(forms.ModelForm):
         answer_text = self.cleaned_data['answer_text']
         if not answer_text or len(answer_text) == 0:
             raise forms.ValidationError("Введите ответ!")
+        if len(answer_text) >= 500:
+            raise forms.ValidationError("Слишком длинный ответ!")
         return self.cleaned_data
 
     class Meta:
