@@ -112,7 +112,7 @@ $.ajax({
     cache: 'false',
     success: function (result){
         $.each(result, function(index, value){
-            $('.active_users'+index).html('<p>'+value+'</p>');
+            $('.active_users'+index).html('<p style="font-weight: bold">'+value+'</p>');
         })
     }
 });
@@ -123,10 +123,9 @@ $.ajax({
     dataType: 'json',
     cache: 'false',
     success: function (result){
-        result.forEach(function (eachObj, index){
-            for (var key in eachObj) {
-                $('.hot_tags'+index).html('<a href="\{\% url \'index_tag\' '+key+' \%\}">'+key+'</a>');
-            }
+        $.each(result, function (index, value){
+            $('.hot_tags'+index).attr("href","/tag/"+value+"/");
+            $('.hot_tags'+index).text(value);
         });
     }
 });
