@@ -88,7 +88,10 @@ class AskForm(forms.ModelForm):
         'class': 'form-control',
         'placeholder': 'Пояснение'
     }))
-    ask_tags = TagField()
+    ask_tags = TagField(widget=TagWidget(attrs={
+        'class': 'form-control',
+        'placeholder': 'Теги (введите через запятую)'
+    }))
 
     def clean(self):
         ask_title = self.cleaned_data['ask_title']
@@ -116,9 +119,6 @@ class AskForm(forms.ModelForm):
     class Meta:
         model = Ask
         fields = ['ask_title', 'ask_explane', 'ask_tags']
-        widgets = {
-            'ask_tags': TagWidget()
-        }
 
 class AnswerForm(forms.ModelForm):
     answer_text = forms.CharField(widget=forms.Textarea(attrs={

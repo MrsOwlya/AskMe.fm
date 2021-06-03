@@ -99,7 +99,7 @@ class QuestDeleteView(DeleteView):
 
 class AnsUpdateView(UpdateView):
     model = Answer
-    template_name = 'asking/question.html'
+    template_name = 'asking/answers.html'
 
     form_class = AnswerForm
 
@@ -176,8 +176,7 @@ def index(request, flag=0, tag_slug=None):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'asking/index.html',
-                  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags, \
-                   'active_users': active_users, 'page_obj': page_obj})
+                  {'index': index, 'title': title, 'tag': tag, 'avatar': avatar(request), 'hot_tags': hot_tags, 'active_users': active_users, 'page_obj': page_obj})
 
 
 def index_hot(request):
