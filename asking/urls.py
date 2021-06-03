@@ -24,6 +24,7 @@ urlpatterns = [
 	path('add_anslike/', views.add_anslike, name='add_anslike'),
 	path('show_asklikes/', views.show_asklikes, name='show_asklikes'),
 	path('show_anslikes/', views.show_anslikes, name='show_anslikes'),
+	path('search/', views.QuestSearchView.as_view(), name='search'),
 	path('rightans/', views.rightans, name='rightans'),
 	path('logout/', views.logout, name='logout'),
 ]

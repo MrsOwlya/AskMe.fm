@@ -1,5 +1,4 @@
-from django.contrib.auth import authenticate, login
-from django.core import serializers
+from itertools import chain
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db import IntegrityError
@@ -97,9 +96,38 @@ class QuestDeleteView(DeleteView):
     template_name = 'asking/question.html'
     success_url = '/hot/'
 
+class QuestSearchView(ListView):
+    model = Ask
+    paginate_by = 3
+    template_name = 'asking/index.html'
+
+    def get_queryset(self):
+        search_set = []
+        search_set.append(Ask.objects.filter(ask_title__icontains=self.request.GET.get("q")))
+        # search_set.append(Ask.objects.filter(ask_tags__icontains=self.request.GET.get("q")))
+        search_set.append(Ask.objects.filter(ask_explane__icontains=self.request.GET.get("q")))
+        final = list(chain(*search_set))
+        final1 = list(set(final))
+        final1.sort(key = lambda ask: ask.ask_date, reverse=True)
+        if not final1:
+            self.search = False
+        else:
+            self.search = True
+        return final1
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['q'] = self.request.GET.get("q")
+        if self.search == True:
+            context['title'] = "Результаты поиска: " + context['q']
+        else:
+            context['title'] = "По вашему запросу ничего не нашлось :("
+        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        return context
+
 class AnsUpdateView(UpdateView):
     model = Answer
-    template_name = 'asking/answers.html'
+    template_name = 'asking/question.html'
 
     form_class = AnswerForm
 
