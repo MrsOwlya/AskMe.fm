@@ -123,9 +123,10 @@ $.ajax({
     dataType: 'json',
     cache: 'false',
     success: function (result){
-        $.each(result, function (index, value){
-            $('.hot_tags'+index).attr("href","/tag/"+value+"/");
-            $('.hot_tags'+index).text(value);
+        $.each(result, function (index, eachObj){
+            keys = Object.keys(eachObj);
+            $('.hot_tags'+index).attr("href","/tag/"+keys+"/");
+            $('.hot_tags'+index).text(eachObj[keys]);
         });
     }
 });
