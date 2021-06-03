@@ -1,7 +1,6 @@
 from datetime import timezone, datetime
-
+from taggit.forms import TagField, TagWidget
 from django.forms import Textarea
-
 from .models import Account, Ask, Answer
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core import validators
@@ -89,10 +88,7 @@ class AskForm(forms.ModelForm):
         'class': 'form-control',
         'placeholder': 'Пояснение'
     }))
-    ask_tags = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Теги (введите через запятую)'
-    }))
+    ask_tags = TagField()
 
     def clean(self):
         ask_title = self.cleaned_data['ask_title']
@@ -107,9 +103,8 @@ class AskForm(forms.ModelForm):
             raise forms.ValidationError("Введите пояснение!")
         if not ask_tags or len(ask_tags) == 0:
             raise forms.ValidationError("Введите теги!")
-        tags_count = ask_tags.split(',')
         count = 0
-        for tag in tags_count:
+        for tag in ask_tags:
             count = count + 1
         if count > 3:
             raise forms.ValidationError("Введите не более трех тегов!")
@@ -121,6 +116,9 @@ class AskForm(forms.ModelForm):
     class Meta:
         model = Ask
         fields = ['ask_title', 'ask_explane', 'ask_tags']
+        widgets = {
+            'ask_tags': TagWidget()
+        }
 
 class AnswerForm(forms.ModelForm):
     answer_text = forms.CharField(widget=forms.Textarea(attrs={
