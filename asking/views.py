@@ -104,7 +104,9 @@ class QuestSearchView(ListView):
     def get_queryset(self):
         search_set = []
         search_set.append(Ask.objects.filter(ask_title__icontains=self.request.GET.get("q")))
-        # search_set.append(Ask.objects.filter(ask_tags__icontains=self.request.GET.get("q")))
+        tags = Tag.objects.filter(name__icontains=self.request.GET.get("q"))
+        for tag in tags:
+            search_set.append(Ask.objects.filter(ask_tags=tag))
         search_set.append(Ask.objects.filter(ask_explane__icontains=self.request.GET.get("q")))
         final = list(chain(*search_set))
         final1 = list(set(final))
