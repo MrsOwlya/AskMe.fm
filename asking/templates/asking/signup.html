@@ -13,7 +13,7 @@
             <div class="alert alert-success">Вы успешно зарегистрированы!</div>
         {% endif %}
     {% endif %}
-    <form role = "form" method = "post">
+    <form enctype="multipart/form-data" role = "form" method = "post">
         {% csrf_token %}
         <div class = "form-group">
             <label for="username">Логин</label>

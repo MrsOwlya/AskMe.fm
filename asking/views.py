@@ -156,8 +156,9 @@ def signup(request):
                                                 password=request.POST.get('password'))
                 user.save()
                 user_pk = User.objects.get(id=user.pk)
+                avatar = request.FILES.get('user_avatar')
                 try:
-                    user_avatar = Account(user=user_pk, user_avatar=request.FILES.get('user_avatar'))
+                    user_avatar = Account(user=user_pk, user_avatar=avatar)
                 except ObjectDoesNotExist:
                     user_avatar = Account(user=user_pk, user_avatar="static/asking/img/noavatar.jpg")
                 user_avatar.save()

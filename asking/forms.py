@@ -77,7 +77,7 @@ class SignupForm(forms.ModelForm):
 
     class Meta:
         model = Account
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'user_avatar']
 
 class AskForm(forms.ModelForm):
     ask_title = forms.CharField(widget=forms.TextInput(attrs={
