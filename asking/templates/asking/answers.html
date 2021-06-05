@@ -125,7 +125,7 @@
                             <div class="col-7">
                                 <p>{{b.answer_date}}</p>
                             </div>
-                            <div class="col-1">
+                            <div class="col-1" data-ans="{{ b.id }}">
                                 <a href="{% url 'ansupdate' b.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
                             </div>
                             <div class="col-1">

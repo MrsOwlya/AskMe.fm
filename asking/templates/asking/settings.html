@@ -6,7 +6,14 @@
 
 {% block content %}
     <h1 class = "text-center">Настройки профиля</h1>
-    <form role = "form">
+    {% if alert %}
+        {% if form.errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+        {% else %}
+            <div class="alert alert-success">Вы успешно зарегистрированы!</div>
+        {% endif %}
+    {% endif %}
+    <form enctype="multipart/form-data" role = "form">
         {% csrf_token %}
         <div class = "form-group">
             <label for="email">Изменить логин</label>
@@ -33,7 +40,7 @@
             <br>
             <img class="rounded" src="{{ avatar }}" style = "width: 200px">
             <br>
-            <input id="file-demo" type="file" class="file" multiple=true data-preview-file-type="any">
+            {{form.user_avatar}}
         </div>
         <br>
         <button type="submit" class="btn btn-info">Подтвердить изменения</button>
