@@ -1,3 +1,5 @@
+
+
 $(document).ready(function(){
     $.each($('.asklikes-button'), function(){
         var ask = $(this).attr("data-ans");
@@ -130,6 +132,21 @@ $.ajax({
         });
     }
 });
+
+$('.answer_update').click(function(){
+    var ans = $(this).attr("data-ans");
+    $.ajax({
+        type: 'GET',
+        cache: 'false',
+        url: '/' + ans + '/answer_update',
+        success: function (result) {
+            $('#curans' + ans).replaceWith(result);
+            },
+    });
+});
+
+
+
 
 function deleteask(){
     var data = confirm('Вы уверены, что хотите удалить этот вопрос?');

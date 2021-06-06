@@ -129,17 +129,19 @@ class QuestSearchView(ListView):
 
 class AnsUpdateView(UpdateView):
     model = Answer
-    template_name = 'asking/question.html'
+    template_name = 'asking/answer_form.html'
 
     form_class = AnswerForm
 
     def get_context_data(self, **kwargs):
         context = super(AnsUpdateView, self).get_context_data(**kwargs)
         context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        context['id'] = self.object.id
         return context
 
 class AnsDeleteView(DeleteView):
     model = Answer
+    fields = ['answer_text']
     template_name = 'asking/question.html'
 
     def get_success_url(self, **kwargs):

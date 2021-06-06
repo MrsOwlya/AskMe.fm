@@ -1,0 +1,17 @@
+
+
+{% load static %}
+
+{% if user.is_authenticated %}
+    {% if form.errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
+    {% endif %}
+    <hr>
+        <form action = "{% url 'ansupdate' id %}" class = "answer_form" role="form" method="post">
+            {% csrf_token %}
+            {{ form.answer_text }}<br>
+            <button type="submit" class="btn btn-info subbtn">Ответить</button>
+        </form>
+{% else %}
+    <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
+{% endif %}

@@ -8,13 +8,11 @@
         <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
     {% endif %}
     <hr>
-    <form role="form" method="post">
-        {% csrf_token %}
-        <p class = "font-weight-bold">Введите ответ<p>
-        {{ form.answer_text }}<br>
-	    <button type="submit" class="btn btn-info">Ответить</button>
-    </form>
-
+        <form role="form" method="post">
+            {% csrf_token %}
+            {{ form.answer_text }}<br>
+            <button type="submit" class="btn btn-info">Ответить</button>
+        </form>
 {% else %}
     <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
 {% endif %}
@@ -33,7 +31,9 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-10">
-                                <p class="text-justify text-wrap text-break">{{b.answer_text}}</p>
+                                <div id = "curans{{ b.id }}">
+                                    <p class="text-justify text-wrap text-break">{{b.answer_text}}</p>
+                                </div>
                             </div>
                             <div class="col-2">
                                 <i class="fas fa-3x fa-check-circle d-flex justify-content-end" style="color:white"></i>
@@ -50,8 +50,8 @@
                             <div class="col-7">
                                 <p>{{b.answer_date}}</p>
                             </div>
-                            <div class="col-1">
-                                <a href="{% url 'ansupdate' b.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                            <div class="col-1 answer_update" data-ans="{{ b.id }}"> <!--href="{% url 'ansupdate' b.id%}"-->
+                                <a class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
                             </div>
                             <div class="col-1">
                                 <form action="{% url 'ansdelete' b.id%}" method="post">
@@ -109,7 +109,9 @@
                     <div class="col-10">
                         <div class="row">
                             <div class="col-10">
-                                <p class="text-justify text-wrap text-break">{{b.answer_text}}</p>
+                                <div id = "curans{{ b.id }}">
+                                    <p class="text-justify text-wrap text-break">{{b.answer_text}}</p>
+                                </div>
                             </div>
                             <div class="col-2">
                                 {% if quest.asker_name == user %}
@@ -125,8 +127,8 @@
                             <div class="col-7">
                                 <p>{{b.answer_date}}</p>
                             </div>
-                            <div class="col-1" data-ans="{{ b.id }}">
-                                <a href="{% url 'ansupdate' b.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                            <div class="col-1 answer_update" data-ans="{{ b.id }}">
+                                <a class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
                             </div>
                             <div class="col-1">
                                 <form action="{% url 'ansdelete' b.id%}" method="post">
