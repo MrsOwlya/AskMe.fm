@@ -2,15 +2,15 @@
 
 {% load static %}
 
-{% block title %}Регистрация{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <h1 class = "text-center">Регистрация</h1>
+    <h1 class = "text-center">{{ title }}</h1>
     {% if alert %}
         {% if form.errors %}
             <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
         {% else %}
-            <div class="alert alert-success">Вы успешно зарегистрированы!</div>
+            <div class="alert alert-success">{{ success }}</div>
         {% endif %}
     {% endif %}
     <form enctype="multipart/form-data" role = "form" method = "post">
@@ -35,13 +35,23 @@
             {{form.password2}}
         </div>
         <br>
-        <div class="form-group">
-            <label for="user_avatar">Загрузите свою аватарку</label>
-            <br>
-            {{form.user_avatar}}
-        </div>
+        {% if user.is_authenticated %}
+            <div class="form-group">
+                <label for="user_avatar">Выбранная аватарка</label>
+                <br>
+                <img class="rounded" src="{{ avatar }}" style = "width: 200px">
+                <br>
+                {{form.user_avatar}}
+            </div>
+        {% else %}
+            <div class="form-group">
+                <label for="user_avatar">Загрузите свою аватарку</label>
+                <br>
+                {{form.user_avatar}}
+            </div>
+        {% endif %}
         <br>
         <span>{{ error }}</span>
-        <button type="submit" class="btn btn-info">Зарегистрироваться</button>
+        <button type="submit" class="btn btn-info">{{ button_name }}</button>
     </form>
 {% endblock %}

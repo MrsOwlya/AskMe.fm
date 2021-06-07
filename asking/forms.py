@@ -67,12 +67,17 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError("Некорректный логин!")
         if not email or len(email) == 0:
             raise forms.ValidationError("Введите email!")
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists() and not User.objects.filter(username=username, email=email).exists():
             raise forms.ValidationError("Пользователь с таким email уже зарегистрирован!")
-        if len(password) <= 8:
-            raise forms.ValidationError("Пароль слишком короткий!")
-        if password != password2:
-            raise forms.ValidationError("Пароли не совпадают!")
+        if not User.objects.filter(username=username, email=email).exists():
+            if len(password) == 0:
+                raise forms.ValidationError("Введите пароль!")
+            if len(password2) == 0:
+                raise forms.ValidationError("Повторите пароль!")
+            if len(password) <= 8:
+                raise forms.ValidationError("Пароль слишком короткий!")
+            if password != password2:
+                raise forms.ValidationError("Пароли не совпадают!")
         return self.cleaned_data
 
     class Meta:

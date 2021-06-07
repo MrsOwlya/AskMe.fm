@@ -150,6 +150,9 @@ class AnsDeleteView(DeleteView):
 
 def signup(request):
     alert = False
+    success = "Вы успешно зарегистрированы!"
+    title = "Регистрация"
+    button_name = "Зарегистрироваться"
     if request.method == "POST":
         form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
@@ -159,19 +162,19 @@ def signup(request):
                 user.save()
                 user_pk = User.objects.get(id=user.pk)
                 avatar = request.FILES.get('user_avatar')
-                try:
+                if avatar is not None:
                     user_avatar = Account(user=user_pk, user_avatar=avatar)
-                except ObjectDoesNotExist:
+                else:
                     user_avatar = Account(user=user_pk, user_avatar="static/asking/img/noavatar.jpg")
                 user_avatar.save()
             except IntegrityError:
                 alert = False
-                return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
+                return render(request, 'asking/signup.html', {'form': form, 'alert': alert, 'title': title, 'button_name': button_name})
         alert = True
-        return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
+        return render(request, 'asking/signup.html',
+                      {'form': form, 'alert': alert, 'success': success, 'title': title, 'button_name': button_name})
     form = SignupForm()
-    return render(request, 'asking/signup.html', {'form': form, 'alert': alert})
-
+    return render(request, 'asking/signup.html', {'form': form, 'alert': alert, 'success': success, 'title': title, 'button_name': button_name})
 
 def ask(request):
     if request.method == 'POST':
@@ -222,34 +225,42 @@ def login_in(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             user = auth.authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
-            if user is not None:
-                auth.login(request, user)
-                return HttpResponseRedirect('/?continue=index')
+            auth.login(request, user)
+            return HttpResponseRedirect('/?continue=index')
         return render(request, 'asking/login.html', {'form': form})
     return render(request, 'asking/login.html', {'form': form})
 
 
 def settings(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST, request.FILES)
-        if form.is_valid():
-            request.user.username = request.POST.get('username')
-            request.user.email = request.POST.get('email')
-            request.user.set_password(request.POST.get('password'))
-            request.user.account.user_avatar = request.FILES.get('user_avatar')
-            request.user.save()
-            request.user.account.save()
-            user = auth.authenticate(username=request.POST.get['username'], password=request.POST.get['password'])
-            if user is not None:
-                auth.login(request.user)
-        return render(request, 'asking/settings.html', {'form': form, 'avatar': avatar(request)})
-    userdata = User.objects.get(id=request.user.id)
-    username = userdata.username
-    email = userdata.email
-    user_avatar = Account.objects.get(user=userdata).user_avatar
-    form = SignupForm({'username': username, 'email': email, 'user_avatar': user_avatar})
-    return render(request, 'asking/settings.html', {'username': username, 'email': email, 'form': form, 'avatar': avatar(request)})
-
+    title = "Настройки пользователя"
+    button_name = "Сохранить изменения"
+    success = "Изменения сохранены!"
+    if request.user.is_authenticated:
+        alert = False
+        if request.method == 'POST':
+            form = SignupForm(request.POST, request.FILES)
+            if form.is_valid():
+                request.user.username = request.POST.get('username')
+                request.user.email = request.POST.get('email')
+                if len(request.POST.get('password')) == 0:
+                    request.user.password = User.objects.get(id=request.user.id).password
+                else:
+                    request.user.password = request.POST.get('password')
+                if not request.FILES.get('user_avatar'):
+                    request.user.account.user_avatar = Account.objects.get(user=request.user).user_avatar
+                else:
+                    request.user.account.user_avatar = request.FILES.get('user_avatar')
+                request.user.save()
+                request.user.account.save()
+                user = auth.authenticate(username=request.user.username, password=request.user.password)
+                auth.login(request, user)
+                alert = True
+                return render(request, 'asking/signup.html', {'form': form, 'avatar': avatar(request), 'alert': alert, 'success': success,'title': title, 'button_name': button_name})
+            alert = True
+            return render(request, 'asking/signup.html', {'form': form, 'avatar': avatar(request), 'alert': alert, 'success': success,'title': title, 'button_name': button_name})
+        form = SignupForm(instance=User.objects.get(id=request.user.id))
+        return render(request, 'asking/signup.html', {'alert': alert, 'success': success, 'form': form, 'avatar': avatar(request), 'title': title, 'button_name': button_name})
+    return HttpResponseRedirect('/?continue=notlogin')
 
 def asklikes(request, current_ask, like_dis):
     try:

@@ -6,14 +6,17 @@ from taggit.managers import TaggableManager
 
 # Create your models here.
 
+
 class Account(models.Model):
-    user = models.OneToOneField(User, related_name='account', null=False, verbose_name='Пользователь', on_delete=models.DO_NOTHING)
+    user = models.OneToOneField(User, related_name='account', null=False, verbose_name='Пользователь', on_delete=models.CASCADE)
     user_avatar = models.ImageField(null=True, blank=True, verbose_name='Аватарка', upload_to='static/asking/img/')
     user_rating = models.IntegerField(blank=True, default=0, verbose_name='Рейтинг')
 
     def __str__(self):
-        return self.user.username
+        return str(self.user)
 
+    def get_absolute_url(self):
+        return f'/settings/{self.id}/'
 
 class Ask(models.Model):
     ask_title = models.CharField(verbose_name='Вопрос', max_length=200)
