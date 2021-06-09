@@ -12,16 +12,17 @@
             {% csrf_token %}
             {{ form.answer_text }}<br>
             <button type="submit" class="btn btn-info">Ответить</button>
+            <br>
+            <br>
         </form>
 {% else %}
     <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
 {% endif %}
-
 <div id = "answerblock">
 {% if quest.ask_answer.all %}
 	{% for b in page_obj %}
         {% if b.answer_is_right == True %}
-            <div class="p-2 mb-4 bg-success bg-gradient border rounded">
+            <div class="p-2 mb-4 border rounded" style="background-color: mediumaquamarine">
                 <div class="row">
                     <div class="col-2">
                         <img class="rounded-circle m-2" src="/{{ b.answerer_name.account.user_avatar }}" style = "width: 120px">

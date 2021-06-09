@@ -6,33 +6,34 @@
 
 {% block content %}
 
-    <div class="p-3 mb-3 bg-light border rounded">
-        <h4 class="font-weight-bold text-center text-wrap text-break">{{quest.ask_title}}</h4>
+    <div class="p-3 mb-3 border rounded" style="background-color: slategrey">
+        <h4 class=" text-center text-wrap text-break" style="font-weight: bold">{{quest.ask_title}}</h4>
     </div>
     <div class="m-1">
-        <p class="text-justify text-wrap text-break">{{quest.ask_explane}}</p>
+        <p style="color: #e6d16c" class="text-justify text-wrap text-break">{{quest.ask_explane}}</p>
     </div>
+    <hr class="hr_washed">
     <div class="container">
         <div class="row">
             <div class ="col-10">
-                <p>{{quest.asker_name}}</p>
+                <p style="color: #e6d16c">Автор: {{quest.asker_name}}</p>
             </div>
             <div class ="col-2">
-                <p class="text-right">{{quest.ask_date}}</p>
+                <p style="color: #e6d16c" class="text-right">{{quest.ask_date}}</p>
             </div>
         </div>
         <div class="row">
         {% if quest.asker_name == user %}
             <div class="col-8">
-                <p class="tags">
+                <p style="color: #e6d16c" class="tags">
                     Теги:
+                </p>
                     {% for tag in quest.ask_tags.all %}
-                        <a href="{% url "index_tag" tag.slug %}">
+                        <a style="color: #e6d16c" href="{% url "index_tag" tag.slug %}">
                             {{ tag.name }}
                         </a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
-                </p>
             </div>
             <div class="col-1">
                 <a href="{% url 'askupdate' quest.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
@@ -45,7 +46,7 @@
             </div>
         {% else %}
             <div class="col-10">
-                <p class="tags">
+                <p style="color: #e6d16c" class="tags">
                     Теги:
                     {% for tag in quest.ask_tags.all %}
                         <a href="{% url "index_tag" tag.slug %}">

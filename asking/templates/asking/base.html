@@ -16,7 +16,7 @@
 	</head>
 	<body>
 		<header>
-			<nav class="navbar navbar-expand-lg navbar-light border rounded bg-light">
+			<nav class="navbar navbar-expand-lg navbar-light border rounded" style="background-color: slategrey">
 				<div class="container col-md-5">
 					<a class="navbar-brand" style="font-weight: bold" href="{% url 'index' %}">AskMe.fm</a>
 				</div>
@@ -36,7 +36,7 @@
                 {% if user.is_authenticated %}
                     <div class="container avatar-container col-4">
                             <div class="nav-item">
-                                <a class="nav-link" href="{% url 'ask' %}">Ask me!</a>
+                                <a class="nav-link" style="color: #e6d16c; font-weight: bold" href="{% url 'ask' %}">Ask me!</a>
                             </div>
 
                             <div class="col-2 mr-4">
@@ -48,11 +48,10 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a href="{% url 'settings' %}">Настройки</a>
+                                    <a style="color: #e6d16c" href="{% url 'settings' %}">Настройки</a>
                                 </div>
-
                                 <div class="col mr-2">
-                                    <a href="{% url 'logout' %}">Выйти</a>
+                                    <a style="color: #e6d16c" href="{% url 'logout' %}">Выйти</a>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +59,7 @@
                 {% else %}
                     <div class="container avatar-container col-4">
                             <div class="nav-item">
-                                <a class="nav-link" href="{% url 'ask' %}">Ask me!</a>
+                                <a style="color: #e6d16c; font-weight: bold" class="nav-link" href="{% url 'ask' %}">Ask me!</a>
                             </div>
                             <div class="col-2 mr-4">
                                 <img class="rounded-circle" src="{% static "asking/img/noavatar.jpg" %}" style = "width: 90px">
@@ -71,10 +70,10 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a href="{% url 'login' %}">Войти</a>
+                                    <a style="color: #e6d16c" href="{% url 'login' %}">Войти</a>
                                 </div>
                                 <div class="col">
-                                    <a href="{% url 'signup' %}">Регистрация</a>
+                                    <a style="color: #e6d16c" href="{% url 'signup' %}">Регистрация</a>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +95,7 @@
                     <div>
                         <a href = "{% url 'index_hot' %}"><h3>Популярные вопросы</h3></a>
                     </div>
-                    <hr>
+                    <hr class="hr_washed">
                     {% block sidepanel %}
                         {% include 'asking/sidepanel.html' %}
                     {% endblock %}
