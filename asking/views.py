@@ -103,11 +103,13 @@ class QuestSearchView(ListView):
 
     def get_queryset(self):
         search_set = []
-        search_set.append(Ask.objects.filter(ask_title__icontains=self.request.GET.get("q")))
-        tags = Tag.objects.filter(name__icontains=self.request.GET.get("q"))
-        for tag in tags:
-            search_set.append(Ask.objects.filter(ask_tags=tag))
-        search_set.append(Ask.objects.filter(ask_explane__icontains=self.request.GET.get("q")))
+        quest = self.request.GET.get("q").split(" ")
+        for q in quest:
+            search_set.append(Ask.objects.filter(ask_title__icontains=q))
+            tags = Tag.objects.filter(name__icontains=q)
+            for tag in tags:
+                search_set.append(Ask.objects.filter(ask_tags=tag))
+            search_set.append(Ask.objects.filter(ask_explane__icontains=q))
         final = list(chain(*search_set))
         final1 = list(set(final))
         final1.sort(key = lambda ask: ask.ask_date, reverse=True)
