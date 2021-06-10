@@ -1,0 +1,66 @@
+{% extends 'asking/base.html' %}
+
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class = "my-4 p-2">
+        {% if index or q %}
+            <div class="row">
+                <h2 style="color: #e6d16c; font-weight: bold">{{ title }}</h2>
+            </div>
+            <br>
+            <br>
+            {% if page_obj.has_other_pages %}
+                <nav>
+                    <ul class="pagination justify-content-left">
+                        {% if page_obj.has_previous %}
+                            <li class="page_item">
+                                <a style="background-color: slategrey; color: #16014c" class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">&lt;</a>
+                            </li>
+                        {% endif %}
+                        {% for p in page_obj.paginator.page_range %}
+                            {% if page_obj.number == p %}
+                                <li class = "page-item active">
+                                    <a style="background-color: #e6d16c; color: #16014c" class="page-link" href="?q={{ request.GET.q }}&page={{ p }}">{{ p }}</a>
+                                </li>
+                            {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                                <li class = "page-item">
+                                    <a style="background-color: slategrey; color: #16014c" class="page-link" href="?q={{ request.GET.q }}&page={{ p }}">{{ p }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page_item">
+                                <a style="background-color: slategrey; color: #16014c" class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">&gt;</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+            {% for a in page_obj %}
+                <div class = "border rounded bg-light my-4 p-2">
+                    <a href="{% url 'question' a.id%}"><h3>{{a.ask_title}}</h3></a>
+                    <p class="d-inline-block text-truncate" style="max-width:800px;">{{a.ask_explane}}</p>
+                    <div class = "row">
+                        <div class = "col-3">
+                            <p>{{a.ask_date}}</p>
+                        </div>
+                        <div class = "col-3">
+                            <p>Ответов: {{a.ask_answer.all.count}}</p>
+                        </div>
+                        <div class = "col-6">
+                            <p class = "text-end">Спрашивает: {{a.asker_name}}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class = "border rounded bg-light my-4 p-2">
+                <h3>Вопросов нет :(</h3>
+            </div>
+        {% endif %}
+    </div>
+	
+{% endblock %}

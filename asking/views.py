@@ -1,7 +1,9 @@
+from collections import OrderedDict
 from itertools import chain
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db import IntegrityError
+from django.db.models import Count, Subquery
 from django.shortcuts import render, get_object_or_404
 from django.contrib import auth
 from django.contrib.auth.models import User
@@ -99,28 +101,43 @@ class QuestDeleteView(DeleteView):
 class QuestSearchView(ListView):
     model = Ask
     paginate_by = 3
-    template_name = 'asking/index.html'
+    template_name = 'asking/search.html'
 
     def get_queryset(self):
         search_set = []
-        quest = self.request.GET.get("q").split(" ")
+        quest = (str(self.request.GET.get("q"))).split(" ")
         for q in quest:
+            q = (str(q)).replace(' ','')
             search_set.append(Ask.objects.filter(ask_title__icontains=q))
             tags = Tag.objects.filter(name__icontains=q)
             for tag in tags:
                 search_set.append(Ask.objects.filter(ask_tags=tag))
             search_set.append(Ask.objects.filter(ask_explane__icontains=q))
-        final = list(chain(*search_set))
-        final1 = list(set(final))
-        final1.sort(key = lambda ask: ask.ask_date, reverse=True)
-        if not final1:
+        same_list = []
+        for s in search_set:
+            same_list2 = {}
+            count = 0
+            for same in search_set:
+                if set(s) == set(same):
+                    count += 1
+                    if count >= 1:
+                        search_set.remove(same)
+            same_list2['count'] = count
+            same_list2['value'] = s
+            same_list.append(same_list2)
+        same_list.sort(key = lambda d: d['count'], reverse=True)
+        fin = []
+        for q in same_list:
+            fin.append(q['value'])
+        final = list(chain(*fin))
+        if not final:
             self.search = False
         else:
             self.search = True
-        return final1
+        return final
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super(QuestSearchView, self).get_context_data(*args, **kwargs)
         context['q'] = self.request.GET.get("q")
         if self.search == True:
             context['title'] = "Результаты поиска: " + context['q']
