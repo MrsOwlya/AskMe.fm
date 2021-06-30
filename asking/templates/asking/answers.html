@@ -16,20 +16,26 @@
             <br>
         </form>
 {% else %}
-    <p class="font-weight-bold">Войдите или зарегистрируйтесь, чтобы оставить ответ</p>
+        <h5 class="text-style" style="font-weight: bold">
+            <a href="{% url 'login' %}">Войдите</a>
+             или
+            <a href="{% url 'signup' %}">зарегистрируйтесь</a>
+            , чтобы ответить!
+        </h5>
+        <br>
 {% endif %}
 <div id = "answerblock">
 {% if quest.ask_answer.all %}
 	{% for b in page_obj %}
         {% if b.answer_is_right == True %}
-            <div class="p-2 mb-4 border rounded" style="background-color: mediumaquamarine">
+            <div class="p-2 mb-4 border rounded right-ans">
                 <div class="row">
                     <div class="col-2">
-                        <img class="rounded-circle m-2" src="/{{ b.answerer_name.account.user_avatar }}" style = "width: 120px">
+                        <img class="rounded-circle m-2 ans-avatar" src="/{{ b.answerer_name.account.user_avatar }}">
                         <br>
                         <p class="text-center" style="font-weight:bold; font-size:20px">{{b.answerer_name}}</p>
                     </div>
-                    <div class="col-10">
+                    <div class="col-10 pt-2">
                         <div class="row">
                             <div class="col-10">
                                 <div id = "curans{{ b.id }}">
@@ -40,19 +46,19 @@
                                 <i class="fas fa-3x fa-check-circle d-flex justify-content-end" style="color:white"></i>
                                 {% if quest.asker_name == user %}
                                     <div class="right_button" data-ans="{{ b.id }}" answer="deright">
-                                        <button class="btn btn-sussess" type="submit"><p style="color:white">Снять отметку</p></button>
+                                        <button class="btn btn-sussess" type="submit"><p class="right-ans-button">Снять отметку</p></button>
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
+                        <div class="row bottom-bar">
                         {% if b.answerer_name == user %}
                             <div class="col-7">
                                 <p>{{b.answer_date}}</p>
                             </div>
                             <div class="col-1 answer_update" data-ans="{{ b.id }}"> <!--href="{% url 'ansupdate' b.id%}"-->
-                                <a class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                                <a class="btn btn-info ans-update" type="submit"><i class="fas fa-pencil-alt"></i></a>
                             </div>
                             <div class="col-1">
                                 <form action="{% url 'ansdelete' b.id%}" method="post">
@@ -70,23 +76,23 @@
                                 {% if user.is_authenticated %}
                                         <div class="col-6">
                                             <button class="btn btn-info anslikes-button" answer="anslike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-up like" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-info anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-down like" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
                                             </button>
                                         </div>
                                 {% else %}
                                         <div class="col-6">
                                             <button disabled class="btn btn-secondary anslikes-button" answer="anslike" data-ans="{{ b.id }}">
-                                                    <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                                    <strong><i class="fas fa-thumbs-up like" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <button disabled class="btn btn-secondary anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-down like" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
                                             </button>
                                         </div>
                                 {% endif %}
@@ -103,13 +109,13 @@
             <div class="p-1 mb-2 bg-light border rounded">
                 <div class="row">
                     <div class="col-2">
-                        <img class="rounded-circle m-2" src="/{{ b.answerer_name.account.user_avatar }}" style = "width: 120px">
+                        <img class="rounded-circle m-2 ans-avatar" src="/{{ b.answerer_name.account.user_avatar }}">
                         <br>
                         <p class="text-center" style="font-weight:bold; font-size:20px">{{b.answerer_name}}</p>
                     </div>
                     <div class="col-10">
                         <div class="row">
-                            <div class="col-10">
+                            <div class="col-10 pt-2">
                                 <div id = "curans{{ b.id }}">
                                     <p class="text-justify text-wrap text-break">{{b.answer_text}}</p>
                                 </div>
@@ -117,11 +123,12 @@
                             <div class="col-2">
                                 {% if quest.asker_name == user %}
                                     <div class="right_button" data-ans="{{ b.id }}" answer="right">
-                                        <button class="btn btn-success" type="submit"><p style="color:white">Верно!</p></button>
+                                        <button class="btn btn-success" type="submit"><p class="right-ans-button">Верно!</p></button>
                                     </div>
                                 {% endif %}
                             </div>
                         </div>
+                        <div class=" bottom-bar">
                         <hr>
                         <div class="row">
                         {% if b.answerer_name == user %}
@@ -129,7 +136,7 @@
                                 <p>{{b.answer_date}}</p>
                             </div>
                             <div class="col-1 answer_update" data-ans="{{ b.id }}">
-                                <a class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                                <a class="btn btn-info ans-update" type="submit"><i class="fas fa-pencil-alt"></i></a>
                             </div>
                             <div class="col-1">
                                 <form action="{% url 'ansdelete' b.id%}" method="post">
@@ -147,32 +154,34 @@
                                 {% if user.is_authenticated %}
                                         <div class="col-6">
                                             <button class="btn btn-info anslikes-button" answer="anslike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-up like" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-info anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-down like" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
                                             </button>
                                         </div>
                                 {% else %}
                                         <div class="col-6">
                                             <button disabled class="btn btn-secondary anslikes-button" answer="anslike" data-ans="{{ b.id }}">
-                                                    <strong><i class="fas fa-thumbs-up" style="color:white" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
+                                                    <strong><i class="fas fa-thumbs-up like" id="likeans{{ b.id }}">{{ b.answer_likes }}</i></strong>
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <button disabled class="btn btn-secondary anslikes-button" answer="ansdislike" data-ans="{{ b.id }}">
-                                                <strong><i class="fas fa-thumbs-down" style="color:white" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
+                                                <strong><i class="fas fa-thumbs-down like" id="disans{{ b.id }}">{{ b.answer_dislikes }}</i></strong>
                                             </button>
                                         </div>
                                 {% endif %}
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        <br>
         {% endif %}
 	{% endfor %}
     {% if page_obj.has_other_pages %}
@@ -186,7 +195,7 @@
                 {% for p in page_obj.paginator.page_range %}
                     {% if page_obj.number == p %}
                         <li class = "page-item active">
-                            <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                            <a class="page-link page-active" href="?page={{ p }}">{{ p }}</a>
                         </li>
                     {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
                         <li class = "page-item">
@@ -203,7 +212,7 @@
         </nav>
     {% endif %}
 {% else %}
-	На этот вопрос еще никто не ответил :(
+    <p class="text-style">На этот вопрос еще никто не ответил :(</p>
 {% endif %}
     </div>
 

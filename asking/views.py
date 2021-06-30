@@ -79,7 +79,10 @@ class QuestDetailView(FormMixin, DetailView, MultipleObjectMixin):
     def get_context_data(self, **kwargs):
         object_list = Answer.objects.filter(ask=self.get_object()).order_by('-answer_date')
         context = super(QuestDetailView, self).get_context_data(object_list=object_list, **kwargs)
-        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        try:
+            context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        except:
+            pass
         return context
 
 class QuestUpdateView(UpdateView):
@@ -90,7 +93,10 @@ class QuestUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(QuestUpdateView, self).get_context_data(**kwargs)
-        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        try:
+            context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        except:
+            pass
         return context
 
 class QuestDeleteView(DeleteView):
@@ -143,7 +149,10 @@ class QuestSearchView(ListView):
             context['title'] = "Результаты поиска: " + context['q']
         else:
             context['title'] = "По вашему запросу ничего не нашлось :("
-        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        try:
+            context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        except:
+            pass
         return context
 
 class AnsUpdateView(UpdateView):
@@ -154,7 +163,10 @@ class AnsUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(AnsUpdateView, self).get_context_data(**kwargs)
-        context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        try:
+            context['avatar'] = Account.objects.get(user=self.request.user).user_avatar.url
+        except:
+            pass
         context['id'] = self.object.id
         return context
 

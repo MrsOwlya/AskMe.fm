@@ -8,6 +8,62 @@ body {
     padding: 10px;
 }
 
+.nav {
+    background-color: slategrey !important;
+    font-weight: bold;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #e6d16c;
+    font-weight: bold;
+}
+
+.text-style {
+    color: #e6d16c;
+}
+
+.nav-avatar {
+    width: 90px;
+}
+
+.right-ans{
+    background-color: mediumaquamarine;
+}
+
+.right-ans-button{
+    color:white;
+}
+
+.ans-avatar {
+    width: 120px;
+}
+
+.ans-update {
+    color:white !important;
+}
+
+.like {
+    color:white;
+}
+
+.page-link {
+    background-color: slategrey !important;
+    color: #16014c !important;
+}
+
+.page-active {
+    background-color: #e6d16c !important;
+    color: #16014c !important;
+}
+
+.bottom-bar {
+    margin-top: 80px;
+}
+
 .hr_washed {
     background: #e6d16c !important;
     color: #e6d16c !important;

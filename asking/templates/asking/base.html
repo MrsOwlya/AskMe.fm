@@ -16,13 +16,13 @@
 	</head>
 	<body>
 		<header>
-			<nav class="navbar navbar-expand-lg navbar-light border rounded" style="background-color: slategrey">
+			<nav class="nav navbar navbar-expand-lg navbar-light border rounded">
 				<div class="container col-md-5">
-					<a class="navbar-brand" style="font-weight: bold" href="{% url 'index' %}">AskMe.fm</a>
+					<a class="navbar-brand" href="{% url 'index' %}">AskMe.fm</a>
 				</div>
 
 				<div class="container">
-					<form class="form-inline my-2 col" method="get", action="{% url 'search' %}">
+					<form class="form-inline my-2 col" method="get" action="{% url 'search' %}">
 							<div class="row">
 								<div class="col-9">
 									<input class="form-control" type="search" placeholder="Найти" name="q" aria-label="search">
@@ -36,11 +36,11 @@
                 {% if user.is_authenticated %}
                     <div class="container avatar-container col-4">
                             <div class="nav-item">
-                                <a class="nav-link" style="color: #e6d16c; font-weight: bold" href="{% url 'ask' %}">Ask me!</a>
+                                <a class="nav-link" href="{% url 'ask' %}">Ask me!</a>
                             </div>
 
                             <div class="col-2 mr-4">
-                                <img class="rounded-circle" src="{{ avatar }}" style = "width: 90px">
+                                <img class="rounded-circle nav-avatar" src="{{ avatar }}">
                             </div>
                         <div class="row">
                             <div class="mr-4">
@@ -48,10 +48,10 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a style="color: #e6d16c" href="{% url 'settings' %}">Настройки</a>
+                                    <a class="text-style" href="{% url 'settings' %}">Настройки</a>
                                 </div>
                                 <div class="col mr-2">
-                                    <a style="color: #e6d16c" href="{% url 'logout' %}">Выйти</a>
+                                    <a class="text-style" href="{% url 'logout' %}">Выйти</a>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
                                 <a style="color: #e6d16c; font-weight: bold" class="nav-link" href="{% url 'ask' %}">Ask me!</a>
                             </div>
                             <div class="col-2 mr-4">
-                                <img class="rounded-circle" src="{% static "asking/img/noavatar.jpg" %}" style = "width: 90px">
+                                <img class="rounded-circle nav-avatar" src="{% static "asking/img/noavatar.jpg" %}">
                             </div>
                         <div class="row">
                             <div class="mr-4">
@@ -70,10 +70,10 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <a style="color: #e6d16c" href="{% url 'login' %}">Войти</a>
+                                    <a class="text-style" href="{% url 'login' %}">Войти</a>
                                 </div>
                                 <div class="col">
-                                    <a style="color: #e6d16c" href="{% url 'signup' %}">Регистрация</a>
+                                    <a class="text-style" href="{% url 'signup' %}">Регистрация</a>
                                 </div>
                             </div>
                         </div>

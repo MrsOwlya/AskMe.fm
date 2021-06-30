@@ -6,7 +6,7 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-    <h1  style="color: #e6d16c" class = "text-center">Задайте свой вопрос</h1>
+    <h1 class = "text-center nav-link">Задайте свой вопрос</h1>
     {% if form.errors %}
         <div class="alert alert-danger">{{ form.non_field_errors.as_text|slice:"2:" }}</div>
     {% endif %}
@@ -33,7 +33,7 @@
         <button type="submit" class="btn btn-info">Отправить</button>
     </form>
     {% else %}
-        <h2>
+        <h2 class="text-style">
             <a href="{% url 'login' %}">Войдите</a>
              или
             <a href="{% url 'signup' %}">зарегистрируйтесь</a>

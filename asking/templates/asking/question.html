@@ -6,37 +6,37 @@
 
 {% block content %}
 
-    <div class="p-3 mb-3 border rounded" style="background-color: slategrey">
-        <h4 class=" text-center text-wrap text-break" style="font-weight: bold">{{quest.ask_title}}</h4>
+    <div class="nav p-3 mb-3 border rounded">
+        <h4 class="nav text-center text-wrap text-break">{{quest.ask_title}}</h4>
     </div>
     <div class="m-1">
-        <p style="color: #e6d16c" class="text-justify text-wrap text-break">{{quest.ask_explane}}</p>
+        <p class="text-justify text-wrap text-break text-style">{{quest.ask_explane}}</p>
     </div>
     <hr class="hr_washed">
     <div class="container">
         <div class="row">
             <div class ="col-10">
-                <p style="color: #e6d16c">Автор: {{quest.asker_name}}</p>
+                <p class="text-style" >Автор: {{quest.asker_name}}</p>
             </div>
             <div class ="col-2">
-                <p style="color: #e6d16c" class="text-right">{{quest.ask_date}}</p>
+                <p class="text-right text-style">{{quest.ask_date}}</p>
             </div>
         </div>
         <div class="row">
         {% if quest.asker_name == user %}
             <div class="col-8">
-                <p style="color: #e6d16c" class="tags">
+                <p class="tags text-style">
                     Теги:
                 </p>
                     {% for tag in quest.ask_tags.all %}
-                        <a style="color: #e6d16c" href="{% url "index_tag" tag.slug %}">
+                        <a class="text-style" href="{% url "index_tag" tag.slug %}">
                             {{ tag.name }}
                         </a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
             </div>
             <div class="col-1">
-                <a href="{% url 'askupdate' quest.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt" style="color:white"></i></a>
+                <a href="{% url 'askupdate' quest.id%}" class="btn btn-info" type="submit"><i class="fas fa-pencil-alt ans-update"></i></a>
             </div>
             <div class="col-1">
                 <form action="{% url 'askdelete' quest.id%}" method="post">
@@ -46,7 +46,7 @@
             </div>
         {% else %}
             <div class="col-10">
-                <p style="color: #e6d16c" class="tags">
+                <p class="tags text-style">
                     Теги:
                     {% for tag in quest.ask_tags.all %}
                         <a href="{% url "index_tag" tag.slug %}">
@@ -61,13 +61,13 @@
             <div class="col-2">
                 <div class="row">
                     <div class="col-6">
-                        <button class="btn btn-info float-right asklikes-button"  answer="asklike" data-ans="{{ quest.id }}">
-                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeask{{ quest.id }}">{{ quest.ask_likes }}</i></strong>
+                        <button class="btn btn-info float-right asklikes-button" answer="asklike" data-ans="{{ quest.id }}">
+                            <strong><i class="fas fa-thumbs-up like" id="likeask{{ quest.id }}">{{ quest.ask_likes }}</i></strong>
                         </button>
                     </div>
                     <div class="col-6">
                         <button class="btn btn-info float-right asklikes-button" answer="askdislike" data-ans="{{ quest.id }}">
-                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disask{{ quest.id }}">{{ quest.ask_dislikes }}</i></strong>
+                            <strong><i class="fas fa-thumbs-down like" id="disask{{ quest.id }}">{{ quest.ask_dislikes }}</i></strong>
                         </button>
                     </div>
                 </div>
@@ -76,13 +76,13 @@
             <div class="col-2">
                 <div class="row">
                     <div class="col-6">
-                        <button disabled class="btn btn-secondary asklikes-button"  answer="asklike" data-ans="{{ quest.id }}">
-                            <strong><i class="fas fa-thumbs-up" style="color:white" id="likeask{{ quest.id }}">{{ quest.ask_likes }}</i></strong>
+                        <button disabled class="btn btn-secondary asklikes-button" answer="asklike" data-ans="{{ quest.id }}">
+                            <strong><i class="fas fa-thumbs-up like" id="likeask{{ quest.id }}">{{ quest.ask_likes }}</i></strong>
                         </button>
                     </div>
                     <div class="col-6">
                         <button disabled class="btn btn-secondary asklikes-button" answer="askdislike" data-ans="{{ quest.id }}">
-                            <strong><i class="fas fa-thumbs-down" style="color:white" id="disask{{ quest.id }}">{{ quest.ask_dislikes }}</i></strong>
+                            <strong><i class="fas fa-thumbs-down like" id="disask{{ quest.id }}">{{ quest.ask_dislikes }}</i></strong>
                         </button>
                     </div>
                 </div>
